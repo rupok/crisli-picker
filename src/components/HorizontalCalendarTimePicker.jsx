@@ -28,41 +28,70 @@ const HorizontalCalendarTimePicker = ({
   use24Hour = true,
   timeFormat = 'HH:mm' // eslint-disable-line no-unused-vars
 }) => {
+  // Helper functions for 12-hour format
+  const to12HourFormat = (hour) => {
+    if (hour === 0) return 12;
+    if (hour > 12) return hour - 12;
+    return hour;
+  };
+
+  const getPeriod = (hour) => {
+    return hour >= 12 ? 'PM' : 'AM';
+  };
+
+  const to24HourFormat = React.useCallback((hour, period) => {
+    if (period === 'AM') {
+      return hour === 12 ? 0 : hour;
+    } else {
+      return hour === 12 ? 12 : hour + 12;
+    }
+  }, []);
+
   // State for the calendar
   const [currentMonth, setCurrentMonth] = useState(new Date(value));
   const [selectedDate, setSelectedDate] = useState(new Date(value));
 
   // State for time
   const [selectedTime, setSelectedTime] = useState({
-    hour: value.getHours(),
-    minute: value.getMinutes()
+    hour: use24Hour ? value.getHours() : to12HourFormat(value.getHours()),
+    minute: value.getMinutes(),
+    period: getPeriod(value.getHours())
   });
 
   // Generate arrays for hours and minutes
-  const hours = Array.from({ length: use24Hour ? 24 : 12 }, (_, i) => {
-    const hourValue = use24Hour ? i : (i === 0 ? 12 : i);
-    return {
-      value: i,
-      label: hourValue.toString().padStart(2, '0')
-    };
-  });
+  const hours = use24Hour
+    ? Array.from({ length: 24 }, (_, i) => ({
+        value: i,
+        label: i.toString().padStart(2, '0')
+      }))
+    : Array.from({ length: 12 }, (_, i) => ({
+        value: i === 0 ? 12 : i,
+        label: i === 0 ? '12' : i.toString()
+      }));
 
   const minutes = Array.from({ length: 60 }, (_, i) => ({
     value: i,
     label: i.toString().padStart(2, '0')
   }));
 
+  const periods = [
+    { value: 'AM', label: 'AM' },
+    { value: 'PM', label: 'PM' }
+  ];
+
   // Update the parent component when values change
   useEffect(() => {
+    const hour = use24Hour ? selectedTime.hour : to24HourFormat(selectedTime.hour, selectedTime.period);
+
     const newDate = new Date(selectedDate);
-    newDate.setHours(selectedTime.hour);
+    newDate.setHours(hour);
     newDate.setMinutes(selectedTime.minute);
 
     // Prevent unnecessary updates
     if (newDate.getTime() !== value.getTime()) {
       onChange(newDate);
     }
-  }, [selectedDate, selectedTime, onChange, value]);
+  }, [selectedDate, selectedTime, onChange, value, use24Hour, to24HourFormat]);
 
   // Handle time wheel changes
   const handleHourChange = (hour) => {
@@ -71,6 +100,10 @@ const HorizontalCalendarTimePicker = ({
 
   const handleMinuteChange = (minute) => {
     setSelectedTime(prev => ({ ...prev, minute }));
+  };
+
+  const handlePeriodChange = (period) => {
+    setSelectedTime(prev => ({ ...prev, period }));
   };
 
   // Calendar navigation
@@ -395,6 +428,45 @@ const HorizontalCalendarTimePicker = ({
               />
             </div>
           </div>
+
+          {/* AM/PM wheel for 12-hour format */}
+          {!use24Hour && (
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              flex: '0.8'
+            }}>
+              <div style={{
+                fontSize: '11px',
+                color: colors.labelColor,
+                marginBottom: '3px',
+                fontWeight: '500'
+              }}>
+                Period
+              </div>
+              <div style={{
+                width: isMobile ? '50px' : '40px',
+                backgroundColor: theme === 'dark' ? 'rgba(30, 30, 30, 0.8)' : 'rgba(245, 245, 245, 0.9)',
+                borderRadius: '8px',
+                padding: '2px 0',
+                boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
+              }}>
+                <Wheel
+                  items={periods}
+                  value={selectedTime.period}
+                  onChange={handlePeriodChange}
+                  textColor={colors.textColor}
+                  selectedTextColor={colors.selectedTextColor}
+                  highlightColor={colors.highlightColor}
+                  highlightBorderColor={colors.highlightBorderColor}
+                  fontSize="13px"
+                  itemHeight={28}
+                  {...wheelProps}
+                />
+              </div>
+            </div>
+          )}
         </div>
       </div>
     );
@@ -541,7 +613,11 @@ const HorizontalCalendarTimePicker = ({
           onClick={() => {
             // Clear the date
             setSelectedDate(new Date());
-            setSelectedTime({ hour: 0, minute: 0 });
+            setSelectedTime({
+              hour: use24Hour ? 0 : 12,
+              minute: 0,
+              period: 'AM'
+            });
             onChange(null);
           }}
           style={{

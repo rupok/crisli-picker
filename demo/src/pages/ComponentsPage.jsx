@@ -15,6 +15,7 @@ const ComponentsPage = ({ theme }) => {
   const [calendarDate, setCalendarDate] = useState(new Date())
   const [calendarDate12h, setCalendarDate12h] = useState(new Date())
   const [horizontalDate, setHorizontalDate] = useState(new Date())
+  const [horizontalDate12h, setHorizontalDate12h] = useState(new Date())
   const [selectedOption, setSelectedOption] = useState('option2')
 
   const options = [
@@ -204,9 +205,9 @@ const options = [
         </div>
 
         <div className="demo-section">
-          <h3>📆 CalendarTimePicker</h3>
+          <h3>📆 CalendarTimePicker (24-hour)</h3>
           <p style={{ color: theme === 'light' ? '#666' : '#bbb', marginBottom: '1rem' }}>
-            Calendar-based date selection combined with time picker wheels.
+            Calendar-based date selection combined with time picker wheels in 24-hour format.
           </p>
           <div className="selected-value">
             Selected: {calendarDate ? calendarDate.toLocaleString() : 'No date selected'}
@@ -216,8 +217,9 @@ const options = [
             onChange={setCalendarDate}
             theme={theme}
             showTime={true}
+            use24Hours={true}
           />
-          
+
           <div className="code-block">
             <pre>{`import { CalendarTimePicker } from 'crisli-picker';
 
@@ -226,6 +228,36 @@ const options = [
   onChange={setDateTime}
   theme="light"
   showTime={true}
+  use24Hours={true}
+/>`}</pre>
+          </div>
+        </div>
+
+        <div className="demo-section">
+          <h3>📆 CalendarTimePicker (12-hour)</h3>
+          <p style={{ color: theme === 'light' ? '#666' : '#bbb', marginBottom: '1rem' }}>
+            Same calendar component with 12-hour format including AM/PM selection.
+          </p>
+          <div className="selected-value">
+            Selected: {calendarDate12h ? calendarDate12h.toLocaleString() : 'No date selected'}
+          </div>
+          <CalendarTimePicker
+            value={calendarDate12h || new Date()}
+            onChange={setCalendarDate12h}
+            theme={theme}
+            showTime={true}
+            use24Hours={false}
+          />
+
+          <div className="code-block">
+            <pre>{`import { CalendarTimePicker } from 'crisli-picker';
+
+<CalendarTimePicker
+  value={dateTime}
+  onChange={setDateTime}
+  theme="light"
+  showTime={true}
+  use24Hours={false}
 />`}</pre>
           </div>
         </div>
@@ -233,9 +265,9 @@ const options = [
 
       {/* Horizontal Calendar Time Picker - Full Width */}
       <div className="demo-section" style={{ marginTop: '2rem', maxWidth: '900px', margin: '2rem auto 0' }}>
-        <h3>📅 HorizontalCalendarTimePicker</h3>
+        <h3>📅 HorizontalCalendarTimePicker (24-hour)</h3>
         <p style={{ color: theme === 'light' ? '#666' : '#bbb', marginBottom: '1rem' }}>
-          A horizontal layout variant with calendar and time picker positioned side by side for better space utilization.
+          A horizontal layout variant with calendar and time picker positioned side by side for better space utilization in 24-hour format.
         </p>
         <div className="selected-value">
           Selected: {horizontalDate ? horizontalDate.toLocaleString() : 'No date selected'}
@@ -247,7 +279,7 @@ const options = [
           showTime={true}
           use24Hour={true}
         />
-        
+
         <div className="code-block">
           <pre>{`import { HorizontalCalendarTimePicker } from 'crisli-picker';
 
@@ -257,6 +289,35 @@ const options = [
   theme="light"
   showTime={true}
   use24Hour={true}
+/>`}</pre>
+        </div>
+      </div>
+
+      <div className="demo-section" style={{ marginTop: '2rem', maxWidth: '900px', margin: '2rem auto 0' }}>
+        <h3>📅 HorizontalCalendarTimePicker (12-hour)</h3>
+        <p style={{ color: theme === 'light' ? '#666' : '#bbb', marginBottom: '1rem' }}>
+          Same horizontal layout with 12-hour format including AM/PM selection.
+        </p>
+        <div className="selected-value">
+          Selected: {horizontalDate12h ? horizontalDate12h.toLocaleString() : 'No date selected'}
+        </div>
+        <HorizontalCalendarTimePicker
+          value={horizontalDate12h || new Date()}
+          onChange={setHorizontalDate12h}
+          theme={theme}
+          showTime={true}
+          use24Hour={false}
+        />
+
+        <div className="code-block">
+          <pre>{`import { HorizontalCalendarTimePicker } from 'crisli-picker';
+
+<HorizontalCalendarTimePicker
+  value={dateTime}
+  onChange={setDateTime}
+  theme="light"
+  showTime={true}
+  use24Hour={false}
 />`}</pre>
         </div>
       </div>

@@ -17,7 +17,7 @@ const CalendarTimePicker = ({
   value = new Date(),
   onChange,
   showTime = true,
-  use24Hours = true, // eslint-disable-line no-unused-vars
+  use24Hours = true,
   wheelProps = {},
   theme = 'light'
 }) => {
@@ -25,27 +25,59 @@ const CalendarTimePicker = ({
   const [currentMonth, setCurrentMonth] = useState(new Date(value));
   const [selectedDate, setSelectedDate] = useState(new Date(value));
   
+  // Helper functions for 12-hour format
+  const to12HourFormat = (hour) => {
+    if (hour === 0) return 12;
+    if (hour > 12) return hour - 12;
+    return hour;
+  };
+
+  const getPeriod = (hour) => {
+    return hour >= 12 ? 'PM' : 'AM';
+  };
+
+  const to24HourFormat = React.useCallback((hour, period) => {
+    if (period === 'AM') {
+      return hour === 12 ? 0 : hour;
+    } else {
+      return hour === 12 ? 12 : hour + 12;
+    }
+  }, []);
+
   // State for time
   const [selectedTime, setSelectedTime] = useState({
-    hour: value.getHours(),
-    minute: value.getMinutes()
+    hour: use24Hours ? value.getHours() : to12HourFormat(value.getHours()),
+    minute: value.getMinutes(),
+    period: getPeriod(value.getHours())
   });
 
   // Generate arrays for hours and minutes
-  const hours = Array.from({ length: 24 }, (_, i) => ({
-    value: i,
-    label: i.toString().padStart(2, '0')
-  }));
+  const hours = use24Hours
+    ? Array.from({ length: 24 }, (_, i) => ({
+        value: i,
+        label: i.toString().padStart(2, '0')
+      }))
+    : Array.from({ length: 12 }, (_, i) => ({
+        value: i === 0 ? 12 : i,
+        label: i === 0 ? '12' : i.toString()
+      }));
 
   const minutes = Array.from({ length: 60 }, (_, i) => ({
     value: i,
     label: i.toString().padStart(2, '0')
   }));
 
+  const periods = [
+    { value: 'AM', label: 'AM' },
+    { value: 'PM', label: 'PM' }
+  ];
+
   // Update the parent component when values change
   useEffect(() => {
+    const hour = use24Hours ? selectedTime.hour : to24HourFormat(selectedTime.hour, selectedTime.period);
+
     const newDate = new Date(selectedDate);
-    newDate.setHours(selectedTime.hour);
+    newDate.setHours(hour);
     newDate.setMinutes(selectedTime.minute);
 
     // Prevent unnecessary updates
@@ -54,7 +86,7 @@ const CalendarTimePicker = ({
     ) {
       onChange(newDate);
     }
-  }, [selectedDate, selectedTime, onChange, value]);
+  }, [selectedDate, selectedTime, onChange, value, use24Hours, to24HourFormat]);
 
   // Handle time wheel changes
   const handleHourChange = (hour) => {
@@ -63,6 +95,10 @@ const CalendarTimePicker = ({
 
   const handleMinuteChange = (minute) => {
     setSelectedTime(prev => ({ ...prev, minute }));
+  };
+
+  const handlePeriodChange = (period) => {
+    setSelectedTime(prev => ({ ...prev, period }));
   };
 
   // Calendar navigation
@@ -240,7 +276,7 @@ const CalendarTimePicker = ({
             marginTop: '20px'
           }}>
             <div style={{ textAlign: 'center', color: colors.labelColor, fontSize: '14px', fontWeight: 'bold' }}>
-              Time: {selectedTime.hour.toString().padStart(2, '0')}:{selectedTime.minute.toString().padStart(2, '0')}
+              Time: {selectedTime.hour.toString().padStart(2, '0')}:{selectedTime.minute.toString().padStart(2, '0')}{!use24Hours ? ` ${selectedTime.period}` : ''}
             </div>
           </div>
 
@@ -276,6 +312,21 @@ const CalendarTimePicker = ({
                 {...wheelProps}
               />
             </div>
+            {!use24Hours && (
+              <div style={{ width: '60px' }}>
+                <Wheel
+                  items={periods}
+                  value={selectedTime.period}
+                  onChange={handlePeriodChange}
+                  textColor={colors.textColor}
+                  selectedTextColor={colors.selectedTextColor}
+                  highlightColor={colors.highlightColor}
+                  highlightBorderColor={colors.highlightBorderColor}
+                  fontSize="16px"
+                  {...wheelProps}
+                />
+              </div>
+            )}
           </div>
         </div>
       )}
