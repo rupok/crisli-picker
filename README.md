@@ -2,17 +2,38 @@
 
 A modern, customizable date and time picker library for React applications, inspired by mobile date/time pickers.
 
-## 🎡 [Live Demo](https://crisli.app) | [NPM Package](https://www.npmjs.com/package/crisli-picker)
+## 🎡 [Live Demo](https://crisli.app) | [NPM Package](https://www.npmjs.com/package/crisli-picker) | [GitHub](https://github.com/rupok/crisli-picker)
 
 ## Features
 
-- 🎡 Smooth wheel-based pickers with mobile-like scrolling
-- 📅 Calendar date selection with intuitive interface
-- 🕒 Time selection with hour and minute wheels
-- 🌗 Light and dark theme support
-- 📱 Responsive design for both mobile and desktop
-- 🧩 Multiple component variants for different use cases
-- 👆 Touch and mouse support
+### **🎡 Core Components**
+- **Smooth wheel-based pickers** with mobile-like scrolling and momentum
+- **Calendar date selection** with intuitive interface
+- **Time selection** with hour and minute wheels (12/24 hour formats)
+- **Generic wheel picker** for custom option lists
+- **Horizontal calendar layout** for better space utilization
+
+### **🎨 Design & Theming**
+- **Light and dark theme support** with customizable colors
+- **Responsive design** optimized for mobile, tablet, and desktop
+- **Touch and mouse support** with gesture recognition
+- **Smooth animations** and transitions
+- **Customizable styling** for fonts, colors, and dimensions
+
+### **⚡ Developer Experience**
+- **TypeScript support** with comprehensive type definitions
+- **Works with both JSX and TSX** projects seamlessly
+- **Comprehensive test suite** with Jest + React Testing Library
+- **Interactive demo application** with live examples
+- **Complete documentation** and API reference
+- **Modern build system** with Rollup (CommonJS + ESM)
+
+### **📱 Accessibility & UX**
+- **Mobile-first design** with touch optimization
+- **Keyboard navigation** support
+- **Screen reader friendly** with proper ARIA labels
+- **Momentum scrolling** like native mobile pickers
+- **Edge case handling** (null values, date boundaries)
 
 ## Installation
 
@@ -231,6 +252,182 @@ function MyComponent() {
 | `selectedTextColor` | `string` | `'#000'` | Text color for the selected item |
 | `highlightColor` | `string` | `'rgba(0, 0, 0, 0.05)'` | Background color for the selected item highlight |
 | `highlightBorderColor` | `string` | `'rgba(0, 0, 0, 0.1)'` | Border color for the selected item highlight |
+
+## 🚀 Live Demo
+
+Experience Crisli Picker with our comprehensive demo applications:
+
+### **🎨 Interactive Demo** (Recommended)
+**URL**: http://localhost:3001 (when running locally) | [Live Demo](https://crisli.app)
+
+A modern, full-featured demo built with Vite + React featuring:
+
+- **🏠 Home Page**: Hero section, feature overview, and quick component demos
+- **🧩 Components Page**: Detailed showcase of all 5 components with live code examples
+- **📋 Examples Page**: Real-world use cases including appointment booking form
+- **📚 Documentation Page**: Complete API reference and TypeScript support guide
+- **🌗 Theme Switching**: Toggle between light and dark themes
+- **📱 Responsive Design**: Optimized for desktop, tablet, and mobile
+- **⚡ Hot Reload**: Instant updates during development
+
+### **📄 Simple Demo**
+**URL**: http://localhost:3000 (when running locally)
+
+A lightweight HTML demo for quick testing and basic component exploration.
+
+## Development
+
+### Running the Demo Locally
+
+```bash
+# Install dependencies
+npm install
+
+# Install demo dependencies
+cd demo && npm install && cd ..
+
+# Start development server (builds library + runs demo)
+npm run dev
+```
+
+**Available URLs:**
+- **Vite Demo**: http://localhost:3001 (full-featured)
+- **Simple Demo**: http://localhost:3000 (basic HTML)
+
+### Demo-Only Development
+
+```bash
+# Run only the Vite demo (without library rebuild)
+npm run demo:dev
+
+# Build demo for production
+npm run demo:build
+
+# Preview production demo build
+npm run demo:preview
+```
+
+### Building the Library
+
+```bash
+# Build the library
+npm run build
+
+# Build with watch mode
+npm run build:watch
+```
+
+### Testing
+
+Comprehensive test suite using Jest + React Testing Library:
+
+```bash
+# Run tests
+npm test
+
+# Run tests in watch mode
+npm test:watch
+
+# Run tests with coverage
+npm test:coverage
+```
+
+**Test Coverage:**
+- ✅ **Component rendering** and prop handling
+- ✅ **User interactions** (clicks, scrolls, touch events)
+- ✅ **Theme switching** and styling
+- ✅ **Edge cases** (null values, empty arrays)
+- ✅ **Accessibility** and keyboard navigation
+
+**Test Files:**
+- `tests/components/Wheel.test.jsx` - Core wheel component tests
+- `tests/components/DateTimePicker.test.jsx` - Date/time picker tests
+- `tests/components/WheelPicker.test.jsx` - Generic wheel picker tests
+- `tests/setup.js` - Test environment configuration
+
+### Type Checking
+
+```bash
+# Check TypeScript definitions
+npm run type-check
+```
+
+### Linting
+
+```bash
+# Lint code
+npm run lint
+
+# Fix linting issues
+npm run lint:fix
+```
+
+## 📁 Project Structure
+
+```
+crisli-picker/
+├── src/                          # Library source code
+│   ├── components/               # React components
+│   │   ├── Wheel.jsx            # Core wheel component
+│   │   ├── DateTimePicker.jsx   # Date & time picker
+│   │   ├── TimePicker.jsx       # Time-only picker
+│   │   ├── WheelPicker.jsx      # Generic wheel picker
+│   │   ├── CalendarTimePicker.jsx
+│   │   └── HorizontalCalendarTimePicker.jsx
+│   ├── types/                   # TypeScript definitions
+│   │   ├── index.d.ts          # Main type definitions
+│   │   ├── Wheel.d.ts          # Wheel component types
+│   │   └── tsconfig.json       # TypeScript config
+│   └── index.js                # Main entry point
+├── demo/                        # Vite demo application
+│   ├── src/
+│   │   ├── components/         # Demo-specific components
+│   │   ├── pages/             # Demo pages (Home, Components, etc.)
+│   │   ├── App.jsx            # Main demo app
+│   │   └── main.jsx           # Demo entry point
+│   ├── package.json           # Demo dependencies
+│   └── vite.config.js         # Vite configuration
+├── tests/                       # Test suite
+│   ├── components/             # Component tests
+│   └── setup.js               # Test configuration
+├── dist/                       # Built library files
+│   ├── index.js               # CommonJS build
+│   ├── index.esm.js           # ES Module build
+│   └── *.map                  # Source maps
+├── demo-full.html              # Simple HTML demo
+├── demo-server.js              # Simple demo server
+├── package.json                # Main package configuration
+├── rollup.config.js            # Build configuration
+└── README.md                   # This file
+```
+
+## 🛠 Development Workflow
+
+### **For Library Development:**
+1. Make changes to components in `src/components/`
+2. Add/update TypeScript definitions in `src/types/`
+3. Write tests in `tests/components/`
+4. Run `npm run dev` to test in demo
+5. Run `npm test` to verify tests pass
+6. Run `npm run build` to build library
+
+### **For Demo Development:**
+1. Make changes to demo in `demo/src/`
+2. Run `npm run demo:dev` for demo-only development
+3. Test responsiveness and theme switching
+4. Build with `npm run demo:build`
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes
+4. Add tests for your changes
+5. Ensure tests pass (`npm test`)
+6. Ensure type checking passes (`npm run type-check`)
+7. Commit your changes (`git commit -m 'Add amazing feature'`)
+8. Push to the branch (`git push origin feature/amazing-feature`)
+9. Open a Pull Request
 
 ## License
 
