@@ -140,13 +140,16 @@ const DateTimePicker = ({
   ];
 
   // State for selected values
-  const [selectedDate, setSelectedDate] = useState({
-    day: value.getDate(),
-    month: value.getMonth(),
-    year: value.getFullYear(),
-    hour: use24Hours ? value.getHours() : to12HourFormat(value.getHours()),
-    minute: value.getMinutes(),
-    period: getPeriod(value.getHours())
+  const [selectedDate, setSelectedDate] = useState(() => {
+    const currentValue = value || new Date();
+    return {
+      day: currentValue.getDate(),
+      month: currentValue.getMonth(),
+      year: currentValue.getFullYear(),
+      hour: use24Hours ? currentValue.getHours() : to12HourFormat(currentValue.getHours()),
+      minute: currentValue.getMinutes(),
+      period: getPeriod(currentValue.getHours())
+    };
   });
 
   // Generate dynamic arrays based on current selection
