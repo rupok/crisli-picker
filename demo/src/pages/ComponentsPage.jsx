@@ -10,12 +10,16 @@ import {
 const ComponentsPage = ({ theme }) => {
   const [date, setDate] = useState(new Date())
   const [date12h, setDate12h] = useState(new Date())
+  const [dateFuture, setDateFuture] = useState(new Date())
   const [time, setTime] = useState(new Date())
   const [time12h, setTime12h] = useState(new Date())
+  const [timeFuture, setTimeFuture] = useState(new Date())
   const [calendarDate, setCalendarDate] = useState(new Date())
   const [calendarDate12h, setCalendarDate12h] = useState(new Date())
+  const [calendarDateFuture, setCalendarDateFuture] = useState(new Date())
   const [horizontalDate, setHorizontalDate] = useState(new Date())
   const [horizontalDate12h, setHorizontalDate12h] = useState(new Date())
+  const [horizontalDateFuture, setHorizontalDateFuture] = useState(new Date())
   const [selectedOption, setSelectedOption] = useState('option2')
 
   const options = [
@@ -205,6 +209,66 @@ const options = [
         </div>
 
         <div className="demo-section">
+          <h3>🚫 DateTimePicker (Future Only)</h3>
+          <p style={{ color: theme === 'light' ? '#666' : '#bbb', marginBottom: '1rem' }}>
+            Date and time picker with <code>disablePast=true</code> - prevents selection of past dates and times.
+          </p>
+          <div className="selected-value">
+            Selected: {dateFuture ? dateFuture.toLocaleString() : 'No date selected'}
+          </div>
+          <DateTimePicker
+            value={dateFuture || new Date()}
+            onChange={setDateFuture}
+            theme={theme}
+            showTime={true}
+            use24Hours={false}
+            disablePast={true}
+          />
+
+          <div className="code-block">
+            <pre>{`import { DateTimePicker } from 'crisli-picker';
+
+<DateTimePicker
+  value={dateTime}
+  onChange={setDateTime}
+  theme="light"
+  showTime={true}
+  use24Hours={false}
+  disablePast={true}  // 🚫 Disable past dates/times
+/>`}</pre>
+          </div>
+        </div>
+
+        <div className="demo-section">
+          <h3>🚫 TimePicker (Future Only)</h3>
+          <p style={{ color: theme === 'light' ? '#666' : '#bbb', marginBottom: '1rem' }}>
+            Time-only picker with <code>disablePast=true</code> - only future times can be selected (for today).
+          </p>
+          <div className="selected-value">
+            Selected: {timeFuture ? timeFuture.toLocaleTimeString() : 'No time selected'}
+          </div>
+          <TimePicker
+            value={timeFuture || new Date()}
+            onChange={setTimeFuture}
+            theme={theme}
+            use24Hours={true}
+            disablePast={true}
+          />
+
+          <div className="code-block">
+            <pre>{`import { TimePicker } from 'crisli-picker';
+
+<TimePicker
+  value={time}
+  onChange={setTime}
+  theme="light"
+  use24Hours={true}
+  disablePast={true}  // 🚫 Disable past times
+/>`}</pre>
+          </div>
+        </div>
+
+        <div className="demo-section">
           <h3>📆 CalendarTimePicker (24-hour)</h3>
           <p style={{ color: theme === 'light' ? '#666' : '#bbb', marginBottom: '1rem' }}>
             Calendar-based date selection combined with time picker wheels in 24-hour format.
@@ -293,6 +357,38 @@ const options = [
         </div>
       </div>
 
+      {/* Future-only Calendar Demo */}
+      <div className="demo-section" style={{ marginTop: '2rem', maxWidth: '900px', margin: '2rem auto 0' }}>
+        <h3>🚫 CalendarTimePicker (Future Only)</h3>
+        <p style={{ color: theme === 'light' ? '#666' : '#bbb', marginBottom: '1rem' }}>
+          Calendar with <code>disablePast=true</code> - only future dates and times can be selected. Perfect for scheduling appointments or bookings.
+        </p>
+        <div className="selected-value">
+          Selected: {calendarDateFuture ? calendarDateFuture.toLocaleString() : 'No date selected'}
+        </div>
+        <CalendarTimePicker
+          value={calendarDateFuture || new Date()}
+          onChange={setCalendarDateFuture}
+          theme={theme}
+          showTime={true}
+          use24Hours={false}
+          disablePast={true}
+        />
+
+        <div className="code-block">
+          <pre>{`import { CalendarTimePicker } from 'crisli-picker';
+
+<CalendarTimePicker
+  value={dateTime}
+  onChange={setDateTime}
+  theme="light"
+  showTime={true}
+  use24Hours={false}
+  disablePast={true}  // 🚫 Disable past dates/times
+/>`}</pre>
+        </div>
+      </div>
+
       <div className="demo-section" style={{ marginTop: '2rem', maxWidth: '900px', margin: '2rem auto 0' }}>
         <h3>📅 HorizontalCalendarTimePicker (12-hour)</h3>
         <p style={{ color: theme === 'light' ? '#666' : '#bbb', marginBottom: '1rem' }}>
@@ -318,6 +414,37 @@ const options = [
   theme="light"
   showTime={true}
   use24Hour={false}
+/>`}</pre>
+        </div>
+      </div>
+
+      <div className="demo-section" style={{ marginTop: '2rem', maxWidth: '900px', margin: '2rem auto 0' }}>
+        <h3>🚫 HorizontalCalendarTimePicker (Future Only)</h3>
+        <p style={{ color: theme === 'light' ? '#666' : '#bbb', marginBottom: '1rem' }}>
+          Horizontal layout with <code>disablePast=true</code> - ideal for booking systems and appointment scheduling.
+        </p>
+        <div className="selected-value">
+          Selected: {horizontalDateFuture ? horizontalDateFuture.toLocaleString() : 'No date selected'}
+        </div>
+        <HorizontalCalendarTimePicker
+          value={horizontalDateFuture || new Date()}
+          onChange={setHorizontalDateFuture}
+          theme={theme}
+          showTime={true}
+          use24Hour={true}
+          disablePast={true}
+        />
+
+        <div className="code-block">
+          <pre>{`import { HorizontalCalendarTimePicker } from 'crisli-picker';
+
+<HorizontalCalendarTimePicker
+  value={dateTime}
+  onChange={setDateTime}
+  theme="light"
+  showTime={true}
+  use24Hour={true}
+  disablePast={true}  // 🚫 Disable past dates/times
 />`}</pre>
         </div>
       </div>
@@ -350,6 +477,16 @@ const options = [
           <div className="demo-section">
             <h4>📱 Responsive</h4>
             <p>Optimized for mobile devices and responsive design</p>
+          </div>
+
+          <div className="demo-section">
+            <h4>🚫 Disable Past</h4>
+            <p>Prevent selection of past dates/times - perfect for booking systems</p>
+          </div>
+
+          <div className="demo-section">
+            <h4>🕐 12/24 Hour</h4>
+            <p>Support for both 12-hour (AM/PM) and 24-hour time formats</p>
           </div>
         </div>
       </div>

@@ -144,6 +144,45 @@ const Wheel = ({
   // Track the direction of scrolling
   const scrollDirection = useRef(0); // 1 for down, -1 for up, 0 for none
 
+  // Helper function to find the nearest non-disabled item
+  const findNearestEnabledIndex = (targetIndex, direction = 0) => {
+    // If the target item is not disabled, return it
+    if (!items[targetIndex]?.disabled) {
+      return targetIndex;
+    }
+
+    // Search in both directions to find the nearest enabled item
+    let upIndex = targetIndex;
+    let downIndex = targetIndex;
+
+    for (let i = 1; i < items.length; i++) {
+      upIndex = targetIndex - i;
+      downIndex = targetIndex + i;
+
+      // Check up direction first if we're scrolling up, or if no direction preference
+      if (direction <= 0 && upIndex >= 0 && !items[upIndex]?.disabled) {
+        return upIndex;
+      }
+
+      // Check down direction
+      if (direction >= 0 && downIndex < items.length && !items[downIndex]?.disabled) {
+        return downIndex;
+      }
+
+      // If direction preference didn't work, check the other direction
+      if (direction > 0 && upIndex >= 0 && !items[upIndex]?.disabled) {
+        return upIndex;
+      }
+
+      if (direction < 0 && downIndex < items.length && !items[downIndex]?.disabled) {
+        return downIndex;
+      }
+    }
+
+    // If no enabled item found, return the original index
+    return targetIndex;
+  };
+
   // Handle the end of wheel scrolling - apply momentum and snap
   const handleWheelEnd = () => {
     // Get the current nearest index based on position
@@ -188,18 +227,21 @@ const Wheel = ({
     // Clamp to valid range
     const clampedIndex = Math.max(0, Math.min(items.length - 1, targetIndex));
 
+    // Find the nearest enabled item
+    const enabledIndex = findNearestEnabledIndex(clampedIndex, scrollDirection.current);
+
     // Calculate animation duration based on distance
-    const distance = Math.abs(clampedIndex - currentIndex);
+    const distance = Math.abs(enabledIndex - currentIndex);
 
     // Shorter duration for more responsive feel
     const duration = Math.min(300, 150 + distance * 30);
 
     // Animate to final position
-    animateToIndex(clampedIndex, duration);
+    animateToIndex(enabledIndex, duration);
 
     // Update the value
-    if (items[clampedIndex]?.value !== value) {
-      onChange(items[clampedIndex]?.value);
+    if (items[enabledIndex]?.value !== value) {
+      onChange(items[enabledIndex]?.value);
     }
 
     // Reset velocity
@@ -306,9 +348,12 @@ const Wheel = ({
     // Clamp to valid range
     const clampedIndex = Math.max(0, Math.min(items.length - 1, momentumIndex));
 
+    // Find the nearest enabled item
+    const enabledIndex = findNearestEnabledIndex(clampedIndex, velocity > 0 ? 1 : -1);
+
     // Calculate animation duration based on distance and velocity
     // This creates the natural feel of iOS momentum scrolling
-    const distance = Math.abs(clampedIndex - currentIndex);
+    const distance = Math.abs(enabledIndex - currentIndex);
     const speed = Math.abs(velocity) * 1000; // Convert to pixels per second
 
     // Longer duration for more distance, shorter for faster flicks
@@ -323,11 +368,11 @@ const Wheel = ({
     }
 
     // Animate to the target index
-    animateToIndex(clampedIndex, duration);
+    animateToIndex(enabledIndex, duration);
 
     // Now call onChange with the final value
-    if (items[clampedIndex]?.value !== value) {
-      onChange(items[clampedIndex]?.value);
+    if (items[enabledIndex]?.value !== value) {
+      onChange(items[enabledIndex]?.value);
     }
 
     // Reset velocity tracker
@@ -336,7 +381,7 @@ const Wheel = ({
 
   // Handle direct item click
   const handleItemClick = (index) => {
-    if (animating) return;
+    if (animating || items[index]?.disabled) return;
     animateToIndex(index);
   };
 
@@ -443,13 +488,17 @@ const Wheel = ({
       }
 
       const isSelected = index === currentIndex;
+      const isDisabled = item.disabled;
 
       // Calculate distance from center
       const distanceFromCenter = Math.abs(index - currentIndex);
 
-      // Calculate opacity based on distance from center
+      // Calculate opacity based on distance from center and disabled state
       // Smoother fade for mobile-like feel
-      const opacity = Math.max(0.3, 1 - (distanceFromCenter * 0.2));
+      let opacity = Math.max(0.3, 1 - (distanceFromCenter * 0.2));
+      if (isDisabled) {
+        opacity = Math.min(opacity, 0.3); // Make disabled items more transparent
+      }
 
       return (
         <div
@@ -467,9 +516,10 @@ const Wheel = ({
             justifyContent: 'center',
             fontSize: isSelected ? fontSize : '14px',
             fontWeight: isSelected ? '600' : fontWeight,
-            color: isSelected ? selectedTextColor : textColor,
+            color: isDisabled ? '#ccc' : (isSelected ? selectedTextColor : textColor),
             opacity: opacity,
-            cursor: 'pointer',
+            cursor: isDisabled ? 'not-allowed' : 'pointer',
+            textDecoration: isDisabled ? 'line-through' : 'none',
             userSelect: 'none',
             textAlign: 'center',
             paddingLeft: '10px',
