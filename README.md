@@ -36,6 +36,7 @@ Originally created for [Crisli App](https://crisli.app) and now available as an 
 - **Screen reader friendly** with proper ARIA labels
 - **Momentum scrolling** like native mobile pickers
 - **Edge case handling** (null values, date boundaries)
+- **🚫 Disable past dates/times** - perfect for booking and scheduling systems
 
 ## Installation
 
@@ -175,6 +176,51 @@ function MyComponent() {
 }
 ```
 
+### 🚫 Disable Past Dates/Times
+
+Perfect for booking systems, appointment scheduling, and any scenario where past dates/times should not be selectable:
+
+```jsx
+// Disable past dates and times - only future selections allowed
+<DateTimePicker
+  value={dateTime}
+  onChange={setDateTime}
+  disablePast={true}  // 🚫 Prevents past date/time selection
+  use24Hours={false}  // Works with both 12-hour and 24-hour formats
+/>
+
+// Time-only picker with past time restriction (for today)
+<TimePicker
+  value={time}
+  onChange={setTime}
+  disablePast={true}  // 🚫 Only future times selectable
+/>
+
+// Calendar with future-only dates
+<CalendarTimePicker
+  value={dateTime}
+  onChange={setDateTime}
+  disablePast={true}  // 🚫 Past dates are grayed out and unselectable
+  showTime={true}
+/>
+
+// Horizontal layout for booking interfaces
+<HorizontalCalendarTimePicker
+  value={dateTime}
+  onChange={setDateTime}
+  disablePast={true}  // 🚫 Perfect for appointment booking
+  use24Hour={true}
+/>
+```
+
+**Features:**
+- ✅ **Past dates** are visually disabled (grayed out with strikethrough)
+- ✅ **Past times** are disabled when today is selected
+- ✅ **Click/touch prevention** on disabled items
+- ✅ **Automatic scrolling** skips disabled items
+- ✅ **Visual feedback** with reduced opacity and strikethrough text
+- ✅ **Works with all components** (DateTimePicker, TimePicker, CalendarTimePicker, HorizontalCalendarTimePicker)
+
 ### WheelPicker
 
 ```jsx
@@ -210,6 +256,8 @@ function MyComponent() {
 | `value` | `Date` | `new Date()` | The selected date and time |
 | `onChange` | `function` | required | Callback when date changes |
 | `showTime` | `boolean` | `true` | Whether to show time picker |
+| `use24Hours` | `boolean` | `true` | Whether to use 24-hour format |
+| `disablePast` | `boolean` | `false` | Whether to disable past dates/times |
 | `wheelProps` | `object` | `{}` | Props to pass to all wheels |
 | `theme` | `string` | `'light'` | Theme for the picker ('light' or 'dark') |
 
@@ -219,7 +267,8 @@ function MyComponent() {
 |------|------|---------|-------------|
 | `value` | `Date` | `new Date()` | The selected time |
 | `onChange` | `function` | required | Callback when time changes |
-| `use24Hour` | `boolean` | `true` | Whether to use 24-hour format |
+| `use24Hours` | `boolean` | `true` | Whether to use 24-hour format |
+| `disablePast` | `boolean` | `false` | Whether to disable past times (for today) |
 | `wheelProps` | `object` | `{}` | Props to pass to all wheels |
 | `theme` | `string` | `'light'` | Theme for the picker ('light' or 'dark') |
 
@@ -230,6 +279,8 @@ function MyComponent() {
 | `value` | `Date` | `new Date()` | The selected date and time |
 | `onChange` | `function` | required | Callback when date/time changes |
 | `showTime` | `boolean` | `true` | Whether to show time picker |
+| `use24Hours` | `boolean` | `true` | Whether to use 24-hour format |
+| `disablePast` | `boolean` | `false` | Whether to disable past dates/times |
 | `wheelProps` | `object` | `{}` | Props to pass to all wheels |
 | `theme` | `string` | `'light'` | Theme for the picker ('light' or 'dark') |
 
@@ -240,11 +291,12 @@ function MyComponent() {
 | `value` | `Date` | `new Date()` | The selected date and time |
 | `onChange` | `function` | required | Callback when date/time changes |
 | `showTime` | `boolean` | `true` | Whether to show time picker |
+| `use24Hour` | `boolean` | `true` | Whether to use 24-hour format |
+| `disablePast` | `boolean` | `false` | Whether to disable past dates/times |
 | `wheelProps` | `object` | `{}` | Props to pass to all wheels |
 | `theme` | `string` | `'light'` | Theme for the picker ('light' or 'dark') |
 | `className` | `string` | `''` | Additional CSS class for the component |
 | `style` | `object` | `{}` | Additional inline styles for the component |
-| `use24Hour` | `boolean` | `true` | Whether to use 24-hour format |
 | `timeFormat` | `string` | `'HH:mm'` | Format for displaying time |
 
 ### WheelPicker
@@ -262,7 +314,7 @@ function MyComponent() {
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `items` | `array` | required | Array of items to display in the wheel |
+| `items` | `array` | required | Array of items to display in the wheel. Each item can have a `disabled` property |
 | `value` | `any` | required | Currently selected value |
 | `onChange` | `function` | required | Callback when value changes |
 | `itemHeight` | `number` | `40` | Height of each item in pixels |
@@ -272,6 +324,15 @@ function MyComponent() {
 | `selectedTextColor` | `string` | `'#000'` | Text color for the selected item |
 | `highlightColor` | `string` | `'rgba(0, 0, 0, 0.05)'` | Background color for the selected item highlight |
 | `highlightBorderColor` | `string` | `'rgba(0, 0, 0, 0.1)'` | Border color for the selected item highlight |
+
+**Item Object Structure:**
+```jsx
+{
+  value: any,        // The value of the item
+  label: string,     // Display text for the item
+  disabled?: boolean // Optional: whether the item is disabled
+}
+```
 
 ## 🚀 Live Demo
 

@@ -18,49 +18,10 @@ const DateTimePicker = ({
   onChange,
   showTime = true,
   use24Hours = true,
+  disablePast = false,
   wheelProps = {},
   theme = 'light'
 }) => {
-  // Generate arrays for days, months, years, hours, minutes
-  const generateDays = (year, month) => {
-    const daysInMonth = new Date(year, month, 0).getDate();
-    return Array.from({ length: daysInMonth }, (_, i) => ({
-      value: i + 1,
-      label: `${i + 1}`
-    }));
-  };
-
-  const months = Array.from({ length: 12 }, (_, i) => ({
-    value: i,
-    label: format(new Date(2000, i, 1), 'MMMM')
-  }));
-
-  const currentYear = new Date().getFullYear();
-  const years = Array.from({ length: 21 }, (_, i) => ({
-    value: currentYear - 10 + i,
-    label: `${currentYear - 10 + i}`
-  }));
-
-  const hours = use24Hours
-    ? Array.from({ length: 24 }, (_, i) => ({
-        value: i,
-        label: i.toString().padStart(2, '0')
-      }))
-    : Array.from({ length: 12 }, (_, i) => ({
-        value: i === 0 ? 12 : i,
-        label: i === 0 ? '12' : i.toString()
-      }));
-
-  const periods = [
-    { value: 'AM', label: 'AM' },
-    { value: 'PM', label: 'PM' }
-  ];
-
-  const minutes = Array.from({ length: 60 }, (_, i) => ({
-    value: i,
-    label: i.toString().padStart(2, '0')
-  }));
-
   // Helper functions for 12-hour format
   const to12HourFormat = (hour) => {
     if (hour === 0) return 12;
@@ -80,6 +41,104 @@ const DateTimePicker = ({
     }
   }, []);
 
+  // Helper functions for disablePast functionality
+  const now = React.useMemo(() => new Date(), []);
+  const today = React.useMemo(() => new Date(now.getFullYear(), now.getMonth(), now.getDate()), [now]);
+
+  const isDateInPast = React.useCallback((year, month, day) => {
+    if (!disablePast) return false;
+    const date = new Date(year, month, day);
+    return date < today;
+  }, [disablePast, today]);
+
+  const isTimeInPast = React.useCallback((year, month, day, hour, minute) => {
+    if (!disablePast || !showTime) return false;
+    const selectedDate = new Date(year, month, day);
+    const isToday = selectedDate.getTime() === today.getTime();
+
+    if (!isToday) return false;
+
+    const selectedTime = new Date(year, month, day, hour, minute);
+    return selectedTime <= now;
+  }, [disablePast, showTime, today, now]);
+
+  // Generate arrays for days, months, years, hours, minutes
+  const generateDays = React.useCallback((year, month) => {
+    const daysInMonth = new Date(year, month, 0).getDate();
+    return Array.from({ length: daysInMonth }, (_, i) => {
+      const day = i + 1;
+      const isPastDate = isDateInPast(year, month - 1, day); // month-1 because Date constructor uses 0-based months
+      return {
+        value: day,
+        label: `${day}`,
+        disabled: isPastDate
+      };
+    });
+  }, [disablePast, isDateInPast]);
+
+  const generateMonths = React.useCallback((year) => {
+    return Array.from({ length: 12 }, (_, i) => {
+      const isPastMonth = disablePast && year === now.getFullYear() && i < now.getMonth();
+      return {
+        value: i,
+        label: format(new Date(2000, i, 1), 'MMMM'),
+        disabled: isPastMonth
+      };
+    });
+  }, [disablePast, now]);
+
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: 21 }, (_, i) => {
+    const year = currentYear - 10 + i;
+    const isPastYear = disablePast && year < currentYear;
+    return {
+      value: year,
+      label: `${year}`,
+      disabled: isPastYear
+    };
+  });
+
+  const generateHours = React.useCallback((year, month, day, period = null) => {
+    if (use24Hours) {
+      return Array.from({ length: 24 }, (_, i) => {
+        const isPastTime = isTimeInPast(year, month, day, i, 0);
+        return {
+          value: i,
+          label: i.toString().padStart(2, '0'),
+          disabled: isPastTime
+        };
+      });
+    } else {
+      return Array.from({ length: 12 }, (_, i) => {
+        const hour = i === 0 ? 12 : i;
+        const hour24 = period ? to24HourFormat(hour, period) : hour;
+        const isPastTime = isTimeInPast(year, month, day, hour24, 0);
+        return {
+          value: hour,
+          label: hour.toString(),
+          disabled: isPastTime
+        };
+      });
+    }
+  }, [use24Hours, disablePast, to24HourFormat, isTimeInPast]);
+
+  const generateMinutes = React.useCallback((year, month, day, hour, period = null) => {
+    return Array.from({ length: 60 }, (_, i) => {
+      const hour24 = use24Hours ? hour : to24HourFormat(hour, period);
+      const isPastTime = isTimeInPast(year, month, day, hour24, i);
+      return {
+        value: i,
+        label: i.toString().padStart(2, '0'),
+        disabled: isPastTime
+      };
+    });
+  }, [use24Hours, disablePast, to24HourFormat, isTimeInPast]);
+
+  const periods = [
+    { value: 'AM', label: 'AM' },
+    { value: 'PM', label: 'PM' }
+  ];
+
   // State for selected values
   const [selectedDate, setSelectedDate] = useState({
     day: value.getDate(),
@@ -90,19 +149,32 @@ const DateTimePicker = ({
     period: getPeriod(value.getHours())
   });
 
-  // Generate days based on selected month and year
-  const [days, setDays] = useState(generateDays(selectedDate.year, selectedDate.month + 1));
+  // Generate dynamic arrays based on current selection
+  const [days, setDays] = useState(() => generateDays(selectedDate.year, selectedDate.month + 1));
+  const [months, setMonths] = useState(() => generateMonths(selectedDate.year));
+  const [hours, setHours] = useState(() => generateHours(selectedDate.year, selectedDate.month, selectedDate.day, selectedDate.period));
+  const [minutes, setMinutes] = useState(() => generateMinutes(selectedDate.year, selectedDate.month, selectedDate.day, selectedDate.hour, selectedDate.period));
 
-  // Update days when month or year changes
+  // Update arrays when dependencies change
   useEffect(() => {
+    // Update days
     setDays(generateDays(selectedDate.year, selectedDate.month + 1));
+
+    // Update months
+    setMonths(generateMonths(selectedDate.year));
+
+    // Update hours and minutes if showTime is enabled
+    if (showTime) {
+      setHours(generateHours(selectedDate.year, selectedDate.month, selectedDate.day, selectedDate.period));
+      setMinutes(generateMinutes(selectedDate.year, selectedDate.month, selectedDate.day, selectedDate.hour, selectedDate.period));
+    }
 
     // If the current day is invalid for the new month, adjust it
     const maxDay = new Date(selectedDate.year, selectedDate.month + 1, 0).getDate();
     if (selectedDate.day > maxDay) {
       setSelectedDate(prev => ({ ...prev, day: maxDay }));
     }
-  }, [selectedDate.month, selectedDate.year, selectedDate.day]);
+  }, [selectedDate.month, selectedDate.year, selectedDate.day, selectedDate.hour, selectedDate.period, showTime, disablePast, generateDays, generateMonths, generateHours, generateMinutes]);
 
   // Update the parent component when values change
   useEffect(() => {
@@ -129,28 +201,49 @@ const DateTimePicker = ({
     }
   }, [selectedDate, onChange, value, use24Hours, to24HourFormat]);
 
-  // Handle individual wheel changes
+  // Handle individual wheel changes with validation
   const handleDayChange = (day) => {
+    if (disablePast && isDateInPast(selectedDate.year, selectedDate.month, day)) {
+      return; // Prevent selecting past dates
+    }
     setSelectedDate(prev => ({ ...prev, day }));
   };
 
   const handleMonthChange = (month) => {
+    if (disablePast && selectedDate.year === now.getFullYear() && month < now.getMonth()) {
+      return; // Prevent selecting past months
+    }
     setSelectedDate(prev => ({ ...prev, month }));
   };
 
   const handleYearChange = (year) => {
+    if (disablePast && year < now.getFullYear()) {
+      return; // Prevent selecting past years
+    }
     setSelectedDate(prev => ({ ...prev, year }));
   };
 
   const handleHourChange = (hour) => {
+    const hour24 = use24Hours ? hour : to24HourFormat(hour, selectedDate.period);
+    if (disablePast && isTimeInPast(selectedDate.year, selectedDate.month, selectedDate.day, hour24, selectedDate.minute)) {
+      return; // Prevent selecting past times
+    }
     setSelectedDate(prev => ({ ...prev, hour }));
   };
 
   const handleMinuteChange = (minute) => {
+    const hour24 = use24Hours ? selectedDate.hour : to24HourFormat(selectedDate.hour, selectedDate.period);
+    if (disablePast && isTimeInPast(selectedDate.year, selectedDate.month, selectedDate.day, hour24, minute)) {
+      return; // Prevent selecting past times
+    }
     setSelectedDate(prev => ({ ...prev, minute }));
   };
 
   const handlePeriodChange = (period) => {
+    const hour24 = to24HourFormat(selectedDate.hour, period);
+    if (disablePast && isTimeInPast(selectedDate.year, selectedDate.month, selectedDate.day, hour24, selectedDate.minute)) {
+      return; // Prevent selecting past times
+    }
     setSelectedDate(prev => ({ ...prev, period }));
   };
 

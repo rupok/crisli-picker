@@ -26,51 +26,151 @@ const HorizontalCalendarTimePicker = ({
   className = '',
   style = {},
   use24Hour = true,
+  disablePast = false,
   timeFormat = 'HH:mm' // eslint-disable-line no-unused-vars
 }) => {
+  // Helper functions for 12-hour format
+  const to12HourFormat = (hour) => {
+    if (hour === 0) return 12;
+    if (hour > 12) return hour - 12;
+    return hour;
+  };
+
+  const getPeriod = (hour) => {
+    return hour >= 12 ? 'PM' : 'AM';
+  };
+
+  const to24HourFormat = React.useCallback((hour, period) => {
+    if (period === 'AM') {
+      return hour === 12 ? 0 : hour;
+    } else {
+      return hour === 12 ? 12 : hour + 12;
+    }
+  }, []);
+
+  // Helper functions for disablePast functionality
+  const now = React.useMemo(() => new Date(), []);
+  const today = React.useMemo(() => new Date(now.getFullYear(), now.getMonth(), now.getDate()), [now]);
+
+  const isDateInPast = React.useCallback((date) => {
+    if (!disablePast) return false;
+    const dateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    return dateOnly < today;
+  }, [disablePast, today]);
+
+  const isTimeInPast = React.useCallback((date, hour, minute) => {
+    if (!disablePast || !showTime) return false;
+    const selectedDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    const isToday = selectedDate.getTime() === today.getTime();
+
+    if (!isToday) return false;
+
+    const selectedTime = new Date(date.getFullYear(), date.getMonth(), date.getDate(), hour, minute);
+    return selectedTime <= now;
+  }, [disablePast, showTime, today, now]);
+
   // State for the calendar
   const [currentMonth, setCurrentMonth] = useState(new Date(value));
   const [selectedDate, setSelectedDate] = useState(new Date(value));
 
   // State for time
   const [selectedTime, setSelectedTime] = useState({
-    hour: value.getHours(),
-    minute: value.getMinutes()
+    hour: use24Hour ? value.getHours() : to12HourFormat(value.getHours()),
+    minute: value.getMinutes(),
+    period: getPeriod(value.getHours())
   });
 
-  // Generate arrays for hours and minutes
-  const hours = Array.from({ length: use24Hour ? 24 : 12 }, (_, i) => {
-    const hourValue = use24Hour ? i : (i === 0 ? 12 : i);
-    return {
-      value: i,
-      label: hourValue.toString().padStart(2, '0')
-    };
-  });
+  // Generate dynamic arrays for hours and minutes
+  const generateHours = React.useCallback((date, period = null) => {
+    if (use24Hour) {
+      return Array.from({ length: 24 }, (_, i) => {
+        const isPastTime = isTimeInPast(date, i, 0);
+        return {
+          value: i,
+          label: i.toString().padStart(2, '0'),
+          disabled: isPastTime
+        };
+      });
+    } else {
+      return Array.from({ length: 12 }, (_, i) => {
+        const hour = i === 0 ? 12 : i;
+        const hour24 = period ? to24HourFormat(hour, period) : hour;
+        const isPastTime = isTimeInPast(date, hour24, 0);
+        return {
+          value: hour,
+          label: hour.toString(),
+          disabled: isPastTime
+        };
+      });
+    }
+  }, [use24Hour, disablePast, to24HourFormat, isTimeInPast]);
 
-  const minutes = Array.from({ length: 60 }, (_, i) => ({
-    value: i,
-    label: i.toString().padStart(2, '0')
-  }));
+  const generateMinutes = React.useCallback((date, hour, period = null) => {
+    return Array.from({ length: 60 }, (_, i) => {
+      const hour24 = use24Hour ? hour : to24HourFormat(hour, period);
+      const isPastTime = isTimeInPast(date, hour24, i);
+      return {
+        value: i,
+        label: i.toString().padStart(2, '0'),
+        disabled: isPastTime
+      };
+    });
+  }, [use24Hour, disablePast, to24HourFormat, isTimeInPast]);
+
+  const periods = [
+    { value: 'AM', label: 'AM' },
+    { value: 'PM', label: 'PM' }
+  ];
+
+  // Generate dynamic arrays based on current selection
+  const [hours, setHours] = useState(() => generateHours(selectedDate, selectedTime.period));
+  const [minutes, setMinutes] = useState(() => generateMinutes(selectedDate, selectedTime.hour, selectedTime.period));
+
+  // Update arrays when dependencies change
+  useEffect(() => {
+    if (showTime) {
+      setHours(generateHours(selectedDate, selectedTime.period));
+      setMinutes(generateMinutes(selectedDate, selectedTime.hour, selectedTime.period));
+    }
+  }, [selectedDate, selectedTime.hour, selectedTime.period, showTime, disablePast, generateHours, generateMinutes]);
 
   // Update the parent component when values change
   useEffect(() => {
+    const hour = use24Hour ? selectedTime.hour : to24HourFormat(selectedTime.hour, selectedTime.period);
+
     const newDate = new Date(selectedDate);
-    newDate.setHours(selectedTime.hour);
+    newDate.setHours(hour);
     newDate.setMinutes(selectedTime.minute);
 
     // Prevent unnecessary updates
     if (newDate.getTime() !== value.getTime()) {
       onChange(newDate);
     }
-  }, [selectedDate, selectedTime, onChange, value]);
+  }, [selectedDate, selectedTime, onChange, value, use24Hour, to24HourFormat]);
 
-  // Handle time wheel changes
+  // Handle time wheel changes with validation
   const handleHourChange = (hour) => {
+    const hour24 = use24Hour ? hour : to24HourFormat(hour, selectedTime.period);
+    if (disablePast && isTimeInPast(selectedDate, hour24, selectedTime.minute)) {
+      return; // Prevent selecting past times
+    }
     setSelectedTime(prev => ({ ...prev, hour }));
   };
 
   const handleMinuteChange = (minute) => {
+    const hour24 = use24Hour ? selectedTime.hour : to24HourFormat(selectedTime.hour, selectedTime.period);
+    if (disablePast && isTimeInPast(selectedDate, hour24, minute)) {
+      return; // Prevent selecting past times
+    }
     setSelectedTime(prev => ({ ...prev, minute }));
+  };
+
+  const handlePeriodChange = (period) => {
+    const hour24 = to24HourFormat(selectedTime.hour, period);
+    if (disablePast && isTimeInPast(selectedDate, hour24, selectedTime.minute)) {
+      return; // Prevent selecting past times
+    }
+    setSelectedTime(prev => ({ ...prev, period }));
   };
 
   // Calendar navigation
@@ -82,8 +182,11 @@ const HorizontalCalendarTimePicker = ({
     setCurrentMonth(addMonths(currentMonth, 1));
   };
 
-  // Calendar date selection
+  // Calendar date selection with validation
   const onDateClick = (day) => {
+    if (disablePast && isDateInPast(day)) {
+      return; // Prevent selecting past dates
+    }
     setSelectedDate(day);
   };
 
@@ -209,10 +312,12 @@ const HorizontalCalendarTimePicker = ({
         const isToday = isSameDay(day, new Date());
         const isSelected = isSameDay(day, selectedDate);
         const isCurrentMonth = isSameMonth(day, monthStart);
+        const isPastDate = isDateInPast(cloneDay);
+        const isDisabled = !isCurrentMonth || isPastDate;
 
         days.push(
           <div
-            className={`day ${!isCurrentMonth ? 'disabled' : ''} ${
+            className={`day ${isDisabled ? 'disabled' : ''} ${
               isSelected ? 'selected' : ''
             } ${isToday ? 'today' : ''}`}
             key={day.toString()}
@@ -220,7 +325,7 @@ const HorizontalCalendarTimePicker = ({
             style={{
               padding: '0',
               textAlign: 'center',
-              cursor: 'pointer',
+              cursor: isDisabled ? 'not-allowed' : 'pointer',
               borderRadius: '50%',
               margin: isSmallScreen ? '1px' : '2px',
               width: `${cellSize}px`,
@@ -236,16 +341,17 @@ const HorizontalCalendarTimePicker = ({
                   : 'transparent',
               color: isSelected
                 ? colors.selectedText
-                : !isCurrentMonth
-                  ? colors.labelColor
+                : isDisabled
+                  ? '#ccc'
                   : colors.textColor,
-              opacity: !isCurrentMonth ? 0.5 : 1,
+              opacity: isDisabled ? 0.4 : 1,
               fontWeight: isToday || isSelected ? 'bold' : 'normal',
               fontSize: fontSize,
+              textDecoration: isPastDate ? 'line-through' : 'none',
               boxShadow: isSelected ? '0 2px 4px rgba(0, 0, 0, 0.1)' : 'none',
               ':hover': {
-                backgroundColor: !isSelected ? colors.dayHoverBg : colors.selectedBg,
-                transform: 'scale(1.05)'
+                backgroundColor: isDisabled ? 'transparent' : (!isSelected ? colors.dayHoverBg : colors.selectedBg),
+                transform: isDisabled ? 'none' : 'scale(1.05)'
               }
             }}
           >
@@ -395,6 +501,45 @@ const HorizontalCalendarTimePicker = ({
               />
             </div>
           </div>
+
+          {/* AM/PM wheel for 12-hour format */}
+          {!use24Hour && (
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              flex: '0.8'
+            }}>
+              <div style={{
+                fontSize: '11px',
+                color: colors.labelColor,
+                marginBottom: '3px',
+                fontWeight: '500'
+              }}>
+                Period
+              </div>
+              <div style={{
+                width: isMobile ? '50px' : '40px',
+                backgroundColor: theme === 'dark' ? 'rgba(30, 30, 30, 0.8)' : 'rgba(245, 245, 245, 0.9)',
+                borderRadius: '8px',
+                padding: '2px 0',
+                boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
+              }}>
+                <Wheel
+                  items={periods}
+                  value={selectedTime.period}
+                  onChange={handlePeriodChange}
+                  textColor={colors.textColor}
+                  selectedTextColor={colors.selectedTextColor}
+                  highlightColor={colors.highlightColor}
+                  highlightBorderColor={colors.highlightBorderColor}
+                  fontSize="13px"
+                  itemHeight={28}
+                  {...wheelProps}
+                />
+              </div>
+            </div>
+          )}
         </div>
       </div>
     );
@@ -541,7 +686,11 @@ const HorizontalCalendarTimePicker = ({
           onClick={() => {
             // Clear the date
             setSelectedDate(new Date());
-            setSelectedTime({ hour: 0, minute: 0 });
+            setSelectedTime({
+              hour: use24Hour ? 0 : 12,
+              minute: 0,
+              period: 'AM'
+            });
             onChange(null);
           }}
           style={{
