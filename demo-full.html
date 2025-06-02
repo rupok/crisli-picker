@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crisli Picker - Full Demo</title>
+    <script type="importmap">
+    {
+        "imports": {
+            "react": "https://esm.sh/react@18",
+            "react-dom": "https://esm.sh/react-dom@18",
+            "react-dom/client": "https://esm.sh/react-dom@18/client",
+            "date-fns": "https://esm.sh/date-fns@2.30.0",
+            "react-spring": "https://esm.sh/react-spring@9.7.3",
+            "@use-gesture/react": "https://esm.sh/@use-gesture/react@10.3.0"
+        }
+    }
+    </script>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 20px;
+                border-radius: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 5px;
+            }
+            .container {
+                padding: 15px;
+                border-radius: 8px;
+            }
+        }
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .demo-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+
+        /* Special handling for HorizontalCalendarTimePicker */
+        .horizontal-calendar-section {
+            grid-column: 1 / -1;
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .horizontal-calendar-section .crisli-horizontal-calendar-time-picker {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .horizontal-calendar-section .crisli-calendar-container {
+            flex: 1;
+            min-width: 300px;
+            max-width: 400px;
+        }
+
+        .horizontal-calendar-section .crisli-time-container {
+            flex: 0 0 auto;
+            min-width: 200px;
+        }
+
+        @media (max-width: 768px) {
+            .horizontal-calendar-section {
+                grid-column: auto;
+                max-width: none;
+            }
+
+            .horizontal-calendar-section .crisli-horizontal-calendar-time-picker {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .horizontal-calendar-section .crisli-calendar-container,
+            .horizontal-calendar-section .crisli-time-container {
+                width: 100%;
+                max-width: none;
+                min-width: auto;
+            }
+        }
+        .demo-section {
+            background: #fafafa;
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid #e0e0e0;
+            overflow: hidden;
+        }
+
+        @media (max-width: 768px) {
+            .demo-section {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .demo-section {
+                padding: 15px;
+            }
+        }
+        .demo-section h3 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+            font-size: 20px;
+        }
+        .selected-value {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: monospace;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .theme-selector {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .theme-selector {
+                padding: 15px;
+                margin-bottom: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .theme-selector {
+                padding: 12px;
+                margin-bottom: 15px;
+            }
+            .theme-selector label {
+                display: block;
+                margin-bottom: 8px;
+                margin-right: 0 !important;
+            }
+        }
+        h1 {
+            text-align: center;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8em;
+            }
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 18px;
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        /* Ensure picker components are responsive */
+        .crisli-datetime-picker,
+        .crisli-time-picker,
+        .crisli-wheel-picker,
+        .crisli-calendar-time-picker {
+            width: 100% !important;
+            max-width: 100% !important;
+            overflow: hidden;
+        }
+
+        .crisli-horizontal-calendar-time-picker {
+            width: 100% !important;
+            max-width: 100% !important;
+            overflow: hidden;
+            margin: 0 auto;
+            display: block;
+        }
+
+        /* Make wheels responsive */
+        .crisli-wheels-container {
+            overflow-x: auto;
+        }
+
+        @media (max-width: 480px) {
+            .crisli-datetime-picker,
+            .crisli-time-picker,
+            .crisli-wheel-picker,
+            .crisli-calendar-time-picker,
+            .crisli-horizontal-calendar-time-picker {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <div class="container">
+            <h1>🎡 Crisli Picker</h1>
+            <div class="loading">Loading components...</div>
+        </div>
+    </div>
+
+    <script type="module">
+        import React, { useState } from 'react';
+        import { createRoot } from 'react-dom/client';
+        
+        // Try to import the built components with timeout
+        let components = null;
+
+        // Add a timeout to prevent infinite loading
+        const loadingTimeout = setTimeout(() => {
+            console.warn('Component loading timed out after 5 seconds');
+            showErrorDemo(new Error('Loading timeout - components could not be loaded within 5 seconds'));
+        }, 5000);
+
+        try {
+            // This will try to load the ES module build
+            console.log('Attempting to load components from ./dist/index.esm.js');
+            const module = await import('./dist/index.esm.js');
+            console.log('Components loaded successfully:', module);
+            clearTimeout(loadingTimeout);
+            components = module;
+        } catch (error) {
+            console.error('Failed to load components:', error);
+            clearTimeout(loadingTimeout);
+            
+            showErrorDemo(error);
+        }
+
+        function showErrorDemo(error) {
+            function ErrorDemo() {
+                return React.createElement('div', { className: 'container' },
+                    React.createElement('h1', null, '🎡 Crisli Picker'),
+                    React.createElement('p', { className: 'subtitle' }, 'Component Loading Status'),
+                    React.createElement('div', { className: 'error' },
+                        React.createElement('h3', null, '⚠️ Module Loading Issue'),
+                        React.createElement('p', null, 'The built components could not be loaded directly in the browser.'),
+                        React.createElement('p', null, 'Error: ', error.message)
+                    ),
+                    React.createElement('div', { className: 'demo-section' },
+                        React.createElement('h3', null, '📋 Available Components'),
+                        React.createElement('p', null, 'The library has been successfully built and includes:'),
+                        React.createElement('ul', null,
+                            React.createElement('li', null, '✅ Wheel - Core scrolling component'),
+                            React.createElement('li', null, '✅ DateTimePicker - Date and time selection'),
+                            React.createElement('li', null, '✅ TimePicker - Time-only selection'),
+                            React.createElement('li', null, '✅ WheelPicker - Generic wheel picker'),
+                            React.createElement('li', null, '✅ CalendarTimePicker - Calendar + time wheels'),
+                            React.createElement('li', null, '✅ HorizontalCalendarTimePicker - Horizontal layout')
+                        )
+                    ),
+                    React.createElement('div', { className: 'demo-section' },
+                        React.createElement('h3', null, '🛠 Development Setup Needed'),
+                        React.createElement('p', null, 'To run the full demo with all components, you need a proper development environment:'),
+                        React.createElement('ol', null,
+                            React.createElement('li', null, 'Install a development server (Vite, Webpack, etc.)'),
+                            React.createElement('li', null, 'Set up the demo with proper module resolution'),
+                            React.createElement('li', null, 'Import the source components directly'),
+                            React.createElement('li', null, 'Or use the built library in a React project')
+                        )
+                    ),
+                    React.createElement('div', { className: 'demo-section' },
+                        React.createElement('h3', null, '📁 Files Available'),
+                        React.createElement('ul', null,
+                            React.createElement('li', null, React.createElement('code', null, 'dist/index.js'), ' - CommonJS build'),
+                            React.createElement('li', null, React.createElement('code', null, 'dist/index.esm.js'), ' - ES Module build'),
+                            React.createElement('li', null, React.createElement('code', null, 'src/demo/Demo.jsx'), ' - Original demo component'),
+                            React.createElement('li', null, React.createElement('code', null, 'src/components/'), ' - All source components')
+                        )
+                    )
+                );
+            }
+            
+            const root = createRoot(document.getElementById('root'));
+            root.render(React.createElement(ErrorDemo));
+        }
+        
+        // If components loaded successfully, render the full demo
+        if (components) {
+            const { DateTimePicker, TimePicker, WheelPicker, CalendarTimePicker, HorizontalCalendarTimePicker } = components;
+            
+            function FullDemo() {
+                const [date, setDate] = useState(new Date());
+                const [time, setTime] = useState(new Date());
+                const [calendarDate, setCalendarDate] = useState(new Date());
+                const [horizontalCalendarDate, setHorizontalCalendarDate] = useState(new Date());
+                const [selectedOption, setSelectedOption] = useState('option2');
+                const [theme, setTheme] = useState('light');
+                
+                const options = [
+                    { value: 'option1', label: 'Option 1' },
+                    { value: 'option2', label: 'Option 2' },
+                    { value: 'option3', label: 'Option 3' },
+                    { value: 'option4', label: 'Option 4' },
+                    { value: 'option5', label: 'Option 5' },
+                ];
+                
+                return React.createElement('div', { className: 'container' },
+                    React.createElement('h1', null, '🎡 Crisli Picker'),
+                    React.createElement('p', { className: 'subtitle' }, 'Full Component Demo'),
+                    
+                    React.createElement('div', { className: 'theme-selector' },
+                        React.createElement('label', { style: { marginRight: '10px' } }, 'Theme:'),
+                        React.createElement('select', {
+                            value: theme,
+                            onChange: (e) => setTheme(e.target.value),
+                            style: { padding: '5px 10px' }
+                        },
+                            React.createElement('option', { value: 'light' }, 'Light'),
+                            React.createElement('option', { value: 'dark' }, 'Dark')
+                        )
+                    ),
+                    
+                    React.createElement('div', { className: 'demo-grid' },
+                        React.createElement('div', { className: 'demo-section' },
+                            React.createElement('h3', null, '📅 Date & Time Picker'),
+                            React.createElement('div', { className: 'selected-value' },
+                                'Selected: ', date ? date.toLocaleString() : 'No date selected'
+                            ),
+                            React.createElement(DateTimePicker, {
+                                value: date || new Date(),
+                                onChange: setDate,
+                                theme: theme
+                            })
+                        ),
+                        
+                        React.createElement('div', { className: 'demo-section' },
+                            React.createElement('h3', null, '🕒 Time Picker'),
+                            React.createElement('div', { className: 'selected-value' },
+                                'Selected: ', time ? time.toLocaleTimeString() : 'No time selected'
+                            ),
+                            React.createElement(TimePicker, {
+                                value: time || new Date(),
+                                onChange: setTime,
+                                theme: theme
+                            })
+                        ),
+                        
+                        React.createElement('div', { className: 'demo-section' },
+                            React.createElement('h3', null, '🎡 Wheel Picker'),
+                            React.createElement('div', { className: 'selected-value' },
+                                'Selected: ', selectedOption
+                            ),
+                            React.createElement(WheelPicker, {
+                                items: options,
+                                value: selectedOption,
+                                onChange: setSelectedOption,
+                                label: "Select an option",
+                                theme: theme
+                            })
+                        ),
+                        
+                        React.createElement('div', { className: 'demo-section' },
+                            React.createElement('h3', null, '📆 Calendar Time Picker'),
+                            React.createElement('div', { className: 'selected-value' },
+                                'Selected: ', calendarDate ? calendarDate.toLocaleString() : 'No date selected'
+                            ),
+                            React.createElement(CalendarTimePicker, {
+                                value: calendarDate || new Date(),
+                                onChange: setCalendarDate,
+                                theme: theme
+                            })
+                        ),
+
+                        React.createElement('div', { className: 'demo-section horizontal-calendar-section' },
+                            React.createElement('h3', null, '📅 Horizontal Calendar Time Picker'),
+                            React.createElement('div', { className: 'selected-value' },
+                                'Selected: ', horizontalCalendarDate ? horizontalCalendarDate.toLocaleString() : 'No date selected'
+                            ),
+                            React.createElement('p', null, 'A horizontal layout variant with calendar and time picker side by side.'),
+                            React.createElement(HorizontalCalendarTimePicker, {
+                                value: horizontalCalendarDate || new Date(),
+                                onChange: setHorizontalCalendarDate,
+                                theme: theme,
+                                showTime: true,
+                                use24Hour: true
+                            })
+                        )
+                    )
+                );
+            }
+            
+            const root = createRoot(document.getElementById('root'));
+            root.render(React.createElement(FullDemo));
+        }
+    </script>
+</body>
+</html>
