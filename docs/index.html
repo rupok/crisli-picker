@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crisli Picker - React Date/Time Picker Library</title>
+    <meta name="description" content="A modern, customizable date and time picker library for React applications">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎡</text></svg>" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .hero {
+            text-align: center;
+            color: white;
+            padding: 4rem 0;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .btn-primary {
+            background: rgba(255, 255, 255, 0.9);
+            color: #667eea;
+        }
+        
+        .btn-primary:hover {
+            background: white;
+        }
+        
+        .features {
+            background: white;
+            border-radius: 16px;
+            padding: 3rem;
+            margin: 3rem 0;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .features h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #333;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .feature {
+            text-align: center;
+            padding: 1.5rem;
+            border-radius: 12px;
+            background: #f8f9fa;
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .feature h3 {
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+        
+        .feature p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .installation {
+            background: #1e1e1e;
+            color: white;
+            border-radius: 16px;
+            padding: 3rem;
+            margin: 3rem 0;
+        }
+        
+        .installation h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .code-block {
+            background: #2d2d2d;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        }
+        
+        .code-block code {
+            color: #f8f8f2;
+        }
+        
+        .highlight {
+            color: #66d9ef;
+        }
+        
+        .string {
+            color: #a6e22e;
+        }
+        
+        .footer {
+            text-align: center;
+            color: white;
+            padding: 2rem 0;
+            opacity: 0.8;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+            
+            .features, .installation {
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <h1>🎡 Crisli Picker</h1>
+            <p>A modern, customizable date and time picker library for React applications</p>
+            <p style="font-size: 1rem; margin-bottom: 3rem;">Originally created for <a href="https://crisli.app" style="color: white; text-decoration: underline;">Crisli App</a></p>
+            
+            <div class="buttons">
+                <a href="https://www.npmjs.com/package/crisli-picker" class="btn btn-primary">📦 NPM Package</a>
+                <a href="https://github.com/rupok/crisli-picker" class="btn">⭐ GitHub</a>
+                <a href="#installation" class="btn">🚀 Get Started</a>
+            </div>
+        </div>
+        
+        <div class="features">
+            <h2>✨ Features</h2>
+            <div class="feature-grid">
+                <div class="feature">
+                    <div class="feature-icon">🎡</div>
+                    <h3>Smooth Wheel Pickers</h3>
+                    <p>Mobile-like scrolling with momentum and smooth animations</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🕒</div>
+                    <h3>12/24 Hour Support</h3>
+                    <p>Full support for both 12-hour (AM/PM) and 24-hour time formats</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">📱</div>
+                    <h3>Mobile First</h3>
+                    <p>Responsive design optimized for touch and mobile devices</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🌗</div>
+                    <h3>Theme Support</h3>
+                    <p>Built-in light and dark themes with customization options</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">⚡</div>
+                    <h3>TypeScript Ready</h3>
+                    <p>Full TypeScript support with comprehensive type definitions</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🧩</div>
+                    <h3>Multiple Components</h3>
+                    <p>Date, time, calendar, and custom wheel picker components</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="installation" id="installation">
+            <h2>🚀 Installation & Usage</h2>
+            
+            <h3 style="margin-bottom: 1rem;">Install</h3>
+            <div class="code-block">
+                <code><span class="highlight">npm install</span> crisli-picker</code>
+            </div>
+            
+            <h3 style="margin: 2rem 0 1rem;">Basic Usage</h3>
+            <div class="code-block">
+                <code><span class="highlight">import</span> { DateTimePicker } <span class="highlight">from</span> <span class="string">'crisli-picker'</span>;<br><br>
+<span class="highlight">function</span> MyComponent() {<br>
+&nbsp;&nbsp;<span class="highlight">const</span> [date, setDate] = useState(<span class="highlight">new Date</span>());<br><br>
+&nbsp;&nbsp;<span class="highlight">return</span> (<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="highlight">DateTimePicker</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;value={date}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;onChange={setDate}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;theme=<span class="string">"light"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;use24Hours={<span class="highlight">false</span>}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;/&gt;<br>
+&nbsp;&nbsp;);<br>
+}</code>
+            </div>
+            
+            <h3 style="margin: 2rem 0 1rem;">Available Components</h3>
+            <div class="code-block">
+                <code><span class="highlight">import</span> {<br>
+&nbsp;&nbsp;DateTimePicker,<br>
+&nbsp;&nbsp;TimePicker,<br>
+&nbsp;&nbsp;WheelPicker,<br>
+&nbsp;&nbsp;CalendarTimePicker,<br>
+&nbsp;&nbsp;HorizontalCalendarTimePicker<br>
+} <span class="highlight">from</span> <span class="string">'crisli-picker'</span>;</code>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Made with ❤️ for the React community</p>
+            <p style="margin-top: 0.5rem;">
+                <a href="https://github.com/rupok/crisli-picker" style="color: white;">GitHub</a> • 
+                <a href="https://www.npmjs.com/package/crisli-picker" style="color: white;">NPM</a> • 
+                <a href="https://crisli.app" style="color: white;">Crisli App</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>
