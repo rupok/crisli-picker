@@ -2,6 +2,8 @@
 
 A modern, customizable date and time picker library for React applications, inspired by mobile date/time pickers.
 
+## 🎡 [Live Demo](https://crisli.app) | [NPM Package](https://www.npmjs.com/package/crisli-picker)
+
 ## Features
 
 - 🎡 Smooth wheel-based pickers with mobile-like scrolling
@@ -15,9 +17,42 @@ A modern, customizable date and time picker library for React applications, insp
 ## Installation
 
 ```bash
-npm install @crisli/picker
+npm install crisli-picker
 # or
-yarn add @crisli/picker
+yarn add crisli-picker
+```
+
+## TypeScript Support
+
+This package includes comprehensive TypeScript definitions. Both JSX and TSX projects are fully supported:
+
+### JSX Projects
+```jsx
+// Works perfectly - no changes needed
+import { DateTimePicker } from 'crisli-picker';
+
+function MyComponent() {
+  const [date, setDate] = useState(new Date());
+  return <DateTimePicker value={date} onChange={setDate} />;
+}
+```
+
+### TSX Projects
+```tsx
+// Gets full TypeScript support automatically
+import { DateTimePicker } from 'crisli-picker';
+
+const MyComponent: React.FC = () => {
+  const [date, setDate] = useState<Date>(new Date());
+  return (
+    <DateTimePicker
+      value={date}           // ✅ Type checked
+      onChange={setDate}     // ✅ Type checked
+      theme="light"          // ✅ Autocomplete: "light" | "dark"
+      showTime={true}        // ✅ IntelliSense shows all props
+    />
+  );
+};
 ```
 
 ## Usage
@@ -25,7 +60,7 @@ yarn add @crisli/picker
 ### DateTimePicker
 
 ```jsx
-import { DateTimePicker } from '@crisli/picker';
+import { DateTimePicker } from 'crisli-picker';
 
 function MyComponent() {
   const [date, setDate] = useState(new Date());
@@ -44,7 +79,7 @@ function MyComponent() {
 ### TimePicker
 
 ```jsx
-import { TimePicker } from '@crisli/picker';
+import { TimePicker } from 'crisli-picker';
 
 function MyComponent() {
   const [time, setTime] = useState(new Date());
@@ -63,7 +98,7 @@ function MyComponent() {
 ### CalendarTimePicker
 
 ```jsx
-import { CalendarTimePicker } from '@crisli/picker';
+import { CalendarTimePicker } from 'crisli-picker';
 
 function MyComponent() {
   const [dateTime, setDateTime] = useState(new Date());
@@ -82,7 +117,7 @@ function MyComponent() {
 ### HorizontalCalendarTimePicker
 
 ```jsx
-import { HorizontalCalendarTimePicker } from '@crisli/picker';
+import { HorizontalCalendarTimePicker } from 'crisli-picker';
 
 function MyComponent() {
   const [dateTime, setDateTime] = useState(new Date());
@@ -102,7 +137,7 @@ function MyComponent() {
 ### WheelPicker
 
 ```jsx
-import { WheelPicker } from '@crisli/picker';
+import { WheelPicker } from 'crisli-picker';
 
 function MyComponent() {
   const [selectedOption, setSelectedOption] = useState('option1');
