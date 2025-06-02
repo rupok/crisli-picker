@@ -1,0 +1,82 @@
+name: Test & Quality Checks
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x, 20.x]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run linting
+      run: npm run lint
+
+    - name: Run type checking
+      run: npm run type-check
+
+    - name: Run tests
+      run: npm run test:coverage
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage/lcov.info
+        flags: unittests
+        name: codecov-umbrella
+        fail_ci_if_error: false
+
+    - name: Build library
+      run: npm run build
+
+    - name: Install demo dependencies
+      run: cd demo && npm ci
+
+    - name: Build demo
+      run: npm run demo:build
+
+  bundle-size:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Build library
+      run: npm run build
+
+    - name: Check bundle size
+      run: |
+        echo "📦 Bundle Size Analysis"
+        echo "======================="
+        ls -lh dist/
+        echo ""
+        echo "📊 Gzipped sizes:"
+        gzip -c dist/index.js | wc -c | awk '{print "CommonJS: " $1/1024 " KB"}'
+        gzip -c dist/index.esm.js | wc -c | awk '{print "ES Module: " $1/1024 " KB"}'
