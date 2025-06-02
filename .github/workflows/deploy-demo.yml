@@ -44,6 +44,16 @@ jobs:
         env:
           NODE_ENV: production
 
+      - name: Copy static demo as fallback
+        run: |
+          cp docs/index.html demo/dist/static.html
+          echo "Static demo copied as fallback"
+
+      - name: Create 404.html for SPA routing
+        run: |
+          cp demo/dist/index.html demo/dist/404.html
+          echo "404.html created for SPA routing"
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
