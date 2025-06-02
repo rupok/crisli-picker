@@ -6,6 +6,7 @@ export type Theme = 'light' | 'dark';
 export interface WheelItem {
   value: any;
   label: string;
+  disabled?: boolean;
 }
 
 // Base wheel props that can be passed to any wheel component
@@ -54,6 +55,11 @@ export interface DateTimePickerProps {
    */
   use24Hours?: boolean;
   /**
+   * Whether to disable past dates and times
+   * @default false
+   */
+  disablePast?: boolean;
+  /**
    * Props to pass to all wheels
    * @default {}
    */
@@ -80,6 +86,11 @@ export interface TimePickerProps {
    * @default true
    */
   use24Hours?: boolean;
+  /**
+   * Whether to disable past times (for current day)
+   * @default false
+   */
+  disablePast?: boolean;
   /**
    * Props to pass to all wheels
    * @default {}
@@ -143,6 +154,11 @@ export interface CalendarTimePickerProps {
    */
   use24Hours?: boolean;
   /**
+   * Whether to disable past dates and times
+   * @default false
+   */
+  disablePast?: boolean;
+  /**
    * Props to pass to all wheels
    * @default {}
    */
@@ -169,6 +185,11 @@ export interface HorizontalCalendarTimePickerProps {
    * @default true
    */
   showTime?: boolean;
+  /**
+   * Whether to disable past dates and times
+   * @default false
+   */
+  disablePast?: boolean;
   /**
    * Props to pass to all wheels
    * @default {}

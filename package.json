@@ -1,7 +1,7 @@
 {
   "name": "crisli-picker",
-  "version": "0.1.0",
-  "description": "A customizable wheel picker for React applications",
+  "version": "0.2.0",
+  "description": "A customizable wheel picker for React applications with date/time selection and booking system support",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "types": "src/types/index.d.ts",
@@ -50,15 +50,21 @@
     "wheel-picker",
     "calendar",
     "mobile",
-    "responsive"
+    "responsive",
+    "booking",
+    "scheduling",
+    "appointment",
+    "disable-past",
+    "future-only",
+    "reservation"
   ],
   "author": "Nazmul H. Rupok",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/rupok/crisli.git"
+    "url": "https://github.com/rupok/crisli-picker.git"
   },
-  "homepage": "https://crisli.app",
+  "homepage": "https://rupok.github.io/crisli-picker",
   "publishConfig": {
     "access": "public"
   },

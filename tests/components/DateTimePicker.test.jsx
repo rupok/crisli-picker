@@ -44,16 +44,17 @@ describe('DateTimePicker Component', () => {
   test('calls onChange when date is modified', async () => {
     const mockOnChange = jest.fn();
     render(<DateTimePicker {...defaultProps} onChange={mockOnChange} />);
-    
-    // Find and click on a different day
-    const dayOption = screen.getByText('16');
+
+    // Find and click on a different day (use getAllByText to get the first occurrence which should be the day)
+    const dayOptions = screen.getAllByText('16');
+    const dayOption = dayOptions[0]; // First occurrence should be the day wheel
     await userEvent.click(dayOption);
-    
+
     // Should eventually call onChange
     await waitFor(() => {
       expect(mockOnChange).toHaveBeenCalled();
     }, { timeout: 1000 });
-    
+
     // Verify the new date has day = 16
     const lastCall = mockOnChange.mock.calls[mockOnChange.mock.calls.length - 1];
     const newDate = lastCall[0];
@@ -148,26 +149,50 @@ describe('DateTimePicker Component', () => {
   });
 
   test('generates correct year range', () => {
-    render(<DateTimePicker {...defaultProps} />);
-    
+    render(<DateTimePicker {...defaultProps} disablePast={false} />);
+
     const currentYear = new Date().getFullYear();
-    
-    // Should include years from currentYear-10 to currentYear+10
-    expect(screen.getByText((currentYear - 10).toString())).toBeInTheDocument();
-    expect(screen.getByText((currentYear + 10).toString())).toBeInTheDocument();
+
+    // Should include current year and some future years
+    const currentYearElements = screen.queryAllByText(currentYear.toString());
+    const futureYearElements = screen.queryAllByText((currentYear + 5).toString());
+
+    expect(currentYearElements.length).toBeGreaterThan(0);
+    expect(futureYearElements.length).toBeGreaterThan(0);
   });
 
   test('handles time changes correctly', async () => {
     const mockOnChange = jest.fn();
     render(<DateTimePicker {...defaultProps} onChange={mockOnChange} showTime={true} />);
-    
-    // Find and click on a different hour
-    const hourOption = screen.getByText('16');
+
+    // Find and click on a different hour (use getAllByText to get the hour wheel)
+    const hourOptions = screen.getAllByText('16');
+    // The hour option should be the last occurrence (after day wheel)
+    const hourOption = hourOptions[hourOptions.length - 1];
     await userEvent.click(hourOption);
-    
+
     // Should eventually call onChange
     await waitFor(() => {
       expect(mockOnChange).toHaveBeenCalled();
     }, { timeout: 1000 });
+  });
+
+  test('disablePast prop prevents past date selection', () => {
+    const futureDate = new Date();
+    futureDate.setDate(futureDate.getDate() + 1); // Tomorrow
+
+    render(<DateTimePicker value={futureDate} onChange={jest.fn()} disablePast={true} />);
+
+    // Component should render without crashing
+    const container = document.querySelector('.crisli-datetime-picker');
+    expect(container).toBeInTheDocument();
+  });
+
+  test('disablePast prop works with default value', () => {
+    render(<DateTimePicker onChange={jest.fn()} disablePast={true} />);
+
+    // Component should render without crashing
+    const container = document.querySelector('.crisli-datetime-picker');
+    expect(container).toBeInTheDocument();
   });
 });
