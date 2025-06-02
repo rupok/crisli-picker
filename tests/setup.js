@@ -1,4 +1,4 @@
-import '@testing-library/jest-dom';
+require('@testing-library/jest-dom');
 
 // Mock date-fns to avoid issues with date formatting in tests
 jest.mock('date-fns', () => ({

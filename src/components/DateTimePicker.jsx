@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { format, addDays, addMonths, addYears, addHours, addMinutes } from 'date-fns';
+import { format } from 'date-fns';
 import Wheel from './Wheel';
 
 /**
@@ -72,13 +72,13 @@ const DateTimePicker = ({
     return hour >= 12 ? 'PM' : 'AM';
   };
 
-  const to24HourFormat = (hour, period) => {
+  const to24HourFormat = React.useCallback((hour, period) => {
     if (period === 'AM') {
       return hour === 12 ? 0 : hour;
     } else {
       return hour === 12 ? 12 : hour + 12;
     }
-  };
+  }, []);
 
   // State for selected values
   const [selectedDate, setSelectedDate] = useState({
@@ -102,7 +102,7 @@ const DateTimePicker = ({
     if (selectedDate.day > maxDay) {
       setSelectedDate(prev => ({ ...prev, day: maxDay }));
     }
-  }, [selectedDate.month, selectedDate.year]);
+  }, [selectedDate.month, selectedDate.year, selectedDate.day]);
 
   // Update the parent component when values change
   useEffect(() => {
