@@ -26,7 +26,7 @@ const HorizontalCalendarTimePicker = ({
   className = '',
   style = {},
   use24Hour = true,
-  timeFormat = 'HH:mm'
+  timeFormat = 'HH:mm' // eslint-disable-line no-unused-vars
 }) => {
   // State for the calendar
   const [currentMonth, setCurrentMonth] = useState(new Date(value));
@@ -52,15 +52,17 @@ const HorizontalCalendarTimePicker = ({
     label: i.toString().padStart(2, '0')
   }));
 
-  // Create a function to update the parent component
-  const updateParentValue = () => {
+  // Update the parent component when values change
+  useEffect(() => {
     const newDate = new Date(selectedDate);
     newDate.setHours(selectedTime.hour);
     newDate.setMinutes(selectedTime.minute);
 
-    // Always call onChange to ensure the picker closes
-    onChange(newDate);
-  };
+    // Prevent unnecessary updates
+    if (newDate.getTime() !== value.getTime()) {
+      onChange(newDate);
+    }
+  }, [selectedDate, selectedTime, onChange, value]);
 
   // Handle time wheel changes
   const handleHourChange = (hour) => {
@@ -398,11 +400,10 @@ const HorizontalCalendarTimePicker = ({
     );
   };
 
-  // Detect if we're on a small screen (mobile)
-  const isSmallScreen = typeof window !== 'undefined' && window.innerWidth < 768;
-
   // Use a state to track screen size changes
-  const [isMobile, setIsMobile] = useState(isSmallScreen);
+  const [isMobile, setIsMobile] = useState(() => {
+    return typeof window !== 'undefined' && window.innerWidth < 768;
+  });
 
   // Update the layout when window size changes
   useEffect(() => {
@@ -561,8 +562,8 @@ const HorizontalCalendarTimePicker = ({
         </button>
         <button
           onClick={() => {
-            // Update parent with current selection
-            updateParentValue();
+            // The parent is automatically updated via useEffect
+            // This button can be used for additional actions if needed
           }}
           style={{
             background: colors.selectedBg,

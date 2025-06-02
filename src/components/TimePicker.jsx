@@ -52,13 +52,13 @@ const TimePicker = ({
   };
 
   // Convert 12-hour format to 24-hour format
-  const to24HourFormat = (hour, period) => {
+  const to24HourFormat = React.useCallback((hour, period) => {
     if (period === 'AM') {
       return hour === 12 ? 0 : hour;
     } else {
       return hour === 12 ? 12 : hour + 12;
     }
-  };
+  }, []);
 
   // State for selected values
   const [selectedTime, setSelectedTime] = useState({

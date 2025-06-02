@@ -17,7 +17,7 @@ const CalendarTimePicker = ({
   value = new Date(),
   onChange,
   showTime = true,
-  use24Hours = true,
+  use24Hours = true, // eslint-disable-line no-unused-vars
   wheelProps = {},
   theme = 'light'
 }) => {

@@ -465,7 +465,7 @@ const Wheel = ({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: isSelected ? '16px' : '14px',
+            fontSize: isSelected ? fontSize : '14px',
             fontWeight: isSelected ? '600' : fontWeight,
             color: isSelected ? selectedTextColor : textColor,
             opacity: opacity,
