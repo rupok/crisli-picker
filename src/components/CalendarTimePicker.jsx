@@ -9,6 +9,7 @@ import Wheel from './Wheel';
  * @param {Date} props.value - Currently selected date
  * @param {Function} props.onChange - Callback when date changes
  * @param {boolean} props.showTime - Whether to show time picker
+ * @param {boolean} props.use24Hours - Whether to use 24-hour format (default: true)
  * @param {Object} props.wheelProps - Props to pass to all wheels
  * @param {string} props.theme - Theme for the picker ('light' or 'dark')
  */
@@ -16,6 +17,7 @@ const CalendarTimePicker = ({
   value = new Date(),
   onChange,
   showTime = true,
+  use24Hours = true,
   wheelProps = {},
   theme = 'light'
 }) => {

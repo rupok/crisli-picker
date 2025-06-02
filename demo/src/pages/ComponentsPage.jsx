@@ -9,8 +9,11 @@ import {
 
 const ComponentsPage = ({ theme }) => {
   const [date, setDate] = useState(new Date())
+  const [date12h, setDate12h] = useState(new Date())
   const [time, setTime] = useState(new Date())
+  const [time12h, setTime12h] = useState(new Date())
   const [calendarDate, setCalendarDate] = useState(new Date())
+  const [calendarDate12h, setCalendarDate12h] = useState(new Date())
   const [horizontalDate, setHorizontalDate] = useState(new Date())
   const [selectedOption, setSelectedOption] = useState('option2')
 
@@ -54,9 +57,9 @@ const ComponentsPage = ({ theme }) => {
 
       <div className="demo-grid">
         <div className="demo-section">
-          <h3>📅 DateTimePicker</h3>
+          <h3>📅 DateTimePicker (24-hour)</h3>
           <p style={{ color: theme === 'light' ? '#666' : '#bbb', marginBottom: '1rem' }}>
-            Combined date and time selection with wheel pickers for day, month, year, hour, and minute.
+            Combined date and time selection with wheel pickers for day, month, year, hour, and minute in 24-hour format.
           </p>
           <div className="selected-value">
             Selected: {date ? date.toLocaleString() : 'No date selected'}
@@ -66,8 +69,9 @@ const ComponentsPage = ({ theme }) => {
             onChange={setDate}
             theme={theme}
             showTime={true}
+            use24Hours={true}
           />
-          
+
           <div className="code-block">
             <pre>{`import { DateTimePicker } from 'crisli-picker';
 
@@ -76,14 +80,44 @@ const ComponentsPage = ({ theme }) => {
   onChange={setDate}
   theme="light"
   showTime={true}
+  use24Hours={true}
 />`}</pre>
           </div>
         </div>
 
         <div className="demo-section">
-          <h3>🕒 TimePicker</h3>
+          <h3>📅 DateTimePicker (12-hour)</h3>
           <p style={{ color: theme === 'light' ? '#666' : '#bbb', marginBottom: '1rem' }}>
-            Time-only selection with support for both 12-hour and 24-hour formats.
+            Same component with 12-hour format including AM/PM selection wheel.
+          </p>
+          <div className="selected-value">
+            Selected: {date12h ? date12h.toLocaleString() : 'No date selected'}
+          </div>
+          <DateTimePicker
+            value={date12h || new Date()}
+            onChange={setDate12h}
+            theme={theme}
+            showTime={true}
+            use24Hours={false}
+          />
+
+          <div className="code-block">
+            <pre>{`import { DateTimePicker } from 'crisli-picker';
+
+<DateTimePicker
+  value={date}
+  onChange={setDate}
+  theme="light"
+  showTime={true}
+  use24Hours={false}
+/>`}</pre>
+          </div>
+        </div>
+
+        <div className="demo-section">
+          <h3>🕒 TimePicker (24-hour)</h3>
+          <p style={{ color: theme === 'light' ? '#666' : '#bbb', marginBottom: '1rem' }}>
+            Time-only selection with 24-hour format (00:00 - 23:59).
           </p>
           <div className="selected-value">
             Selected: {time ? time.toLocaleTimeString() : 'No time selected'}
@@ -94,7 +128,7 @@ const ComponentsPage = ({ theme }) => {
             theme={theme}
             use24Hours={true}
           />
-          
+
           <div className="code-block">
             <pre>{`import { TimePicker } from 'crisli-picker';
 
@@ -103,6 +137,33 @@ const ComponentsPage = ({ theme }) => {
   onChange={setTime}
   theme="light"
   use24Hours={true}
+/>`}</pre>
+          </div>
+        </div>
+
+        <div className="demo-section">
+          <h3>🕒 TimePicker (12-hour)</h3>
+          <p style={{ color: theme === 'light' ? '#666' : '#bbb', marginBottom: '1rem' }}>
+            Time-only selection with 12-hour format including AM/PM wheel.
+          </p>
+          <div className="selected-value">
+            Selected: {time12h ? time12h.toLocaleTimeString() : 'No time selected'}
+          </div>
+          <TimePicker
+            value={time12h || new Date()}
+            onChange={setTime12h}
+            theme={theme}
+            use24Hours={false}
+          />
+
+          <div className="code-block">
+            <pre>{`import { TimePicker } from 'crisli-picker';
+
+<TimePicker
+  value={time}
+  onChange={setTime}
+  theme="light"
+  use24Hours={false}
 />`}</pre>
           </div>
         </div>

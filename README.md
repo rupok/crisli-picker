@@ -2,6 +2,8 @@
 
 A modern, customizable date and time picker library for React applications, inspired by mobile date/time pickers.
 
+Originally created for [Crisli App](https://crisli.app) and now available as an open-source library for the React community.
+
 ## 🎡 [Live Demo](https://crisli.app) | [NPM Package](https://www.npmjs.com/package/crisli-picker) | [GitHub](https://github.com/rupok/crisli-picker)
 
 ## Features
@@ -9,7 +11,7 @@ A modern, customizable date and time picker library for React applications, insp
 ### **🎡 Core Components**
 - **Smooth wheel-based pickers** with mobile-like scrolling and momentum
 - **Calendar date selection** with intuitive interface
-- **Time selection** with hour and minute wheels (12/24 hour formats)
+- **Time selection** with hour and minute wheels (**12-hour with AM/PM** or **24-hour formats**)
 - **Generic wheel picker** for custom option lists
 - **Horizontal calendar layout** for better space utilization
 
@@ -109,11 +111,29 @@ function MyComponent() {
     <TimePicker
       value={time}
       onChange={setTime}
-      use24Hour={true}
+      use24Hours={true}  // or false for 12-hour format with AM/PM
       theme="light"
     />
   );
 }
+```
+
+### 12-Hour Format Support
+
+All time-related components support both 24-hour and 12-hour formats:
+
+```jsx
+// 24-hour format (default)
+<DateTimePicker use24Hours={true} />
+<TimePicker use24Hours={true} />
+<CalendarTimePicker use24Hours={true} />
+<HorizontalCalendarTimePicker use24Hour={true} />
+
+// 12-hour format with AM/PM wheel
+<DateTimePicker use24Hours={false} />
+<TimePicker use24Hours={false} />
+<CalendarTimePicker use24Hours={false} />
+<HorizontalCalendarTimePicker use24Hour={false} />
 ```
 
 ### CalendarTimePicker

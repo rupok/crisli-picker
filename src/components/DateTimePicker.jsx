@@ -9,6 +9,7 @@ import Wheel from './Wheel';
  * @param {Date} props.value - Currently selected date
  * @param {Function} props.onChange - Callback when date changes
  * @param {boolean} props.showTime - Whether to show time picker
+ * @param {boolean} props.use24Hours - Whether to use 24-hour format (default: true)
  * @param {Object} props.wheelProps - Props to pass to all wheels
  * @param {string} props.theme - Theme for the picker ('light' or 'dark')
  */
@@ -16,6 +17,7 @@ const DateTimePicker = ({
   value = new Date(),
   onChange,
   showTime = true,
+  use24Hours = true,
   wheelProps = {},
   theme = 'light'
 }) => {
@@ -39,23 +41,53 @@ const DateTimePicker = ({
     label: `${currentYear - 10 + i}`
   }));
 
-  const hours = Array.from({ length: 24 }, (_, i) => ({
-    value: i,
-    label: i.toString().padStart(2, '0')
-  }));
+  const hours = use24Hours
+    ? Array.from({ length: 24 }, (_, i) => ({
+        value: i,
+        label: i.toString().padStart(2, '0')
+      }))
+    : Array.from({ length: 12 }, (_, i) => ({
+        value: i === 0 ? 12 : i,
+        label: i === 0 ? '12' : i.toString()
+      }));
+
+  const periods = [
+    { value: 'AM', label: 'AM' },
+    { value: 'PM', label: 'PM' }
+  ];
 
   const minutes = Array.from({ length: 60 }, (_, i) => ({
     value: i,
     label: i.toString().padStart(2, '0')
   }));
 
+  // Helper functions for 12-hour format
+  const to12HourFormat = (hour) => {
+    if (hour === 0) return 12;
+    if (hour > 12) return hour - 12;
+    return hour;
+  };
+
+  const getPeriod = (hour) => {
+    return hour >= 12 ? 'PM' : 'AM';
+  };
+
+  const to24HourFormat = (hour, period) => {
+    if (period === 'AM') {
+      return hour === 12 ? 0 : hour;
+    } else {
+      return hour === 12 ? 12 : hour + 12;
+    }
+  };
+
   // State for selected values
   const [selectedDate, setSelectedDate] = useState({
     day: value.getDate(),
     month: value.getMonth(),
     year: value.getFullYear(),
-    hour: value.getHours(),
-    minute: value.getMinutes()
+    hour: use24Hours ? value.getHours() : to12HourFormat(value.getHours()),
+    minute: value.getMinutes(),
+    period: getPeriod(value.getHours())
   });
 
   // Generate days based on selected month and year
@@ -74,11 +106,13 @@ const DateTimePicker = ({
 
   // Update the parent component when values change
   useEffect(() => {
+    const hour = use24Hours ? selectedDate.hour : to24HourFormat(selectedDate.hour, selectedDate.period);
+
     const newDate = new Date(
       selectedDate.year,
       selectedDate.month,
       selectedDate.day,
-      selectedDate.hour,
+      hour,
       selectedDate.minute
     );
 
@@ -93,7 +127,7 @@ const DateTimePicker = ({
     ) {
       onChange(newDate);
     }
-  }, [selectedDate, onChange, value]);
+  }, [selectedDate, onChange, value, use24Hours, to24HourFormat]);
 
   // Handle individual wheel changes
   const handleDayChange = (day) => {
@@ -114,6 +148,10 @@ const DateTimePicker = ({
 
   const handleMinuteChange = (minute) => {
     setSelectedDate(prev => ({ ...prev, minute }));
+  };
+
+  const handlePeriodChange = (period) => {
+    setSelectedDate(prev => ({ ...prev, period }));
   };
 
   // Theme colors
@@ -172,6 +210,11 @@ const DateTimePicker = ({
             <div style={{ flex: 1, textAlign: 'center', color: colors.labelColor, fontSize: '12px' }}>
               Min
             </div>
+            {!use24Hours && (
+              <div style={{ flex: 1, textAlign: 'center', color: colors.labelColor, fontSize: '12px' }}>
+                AM/PM
+              </div>
+            )}
           </>
         )}
       </div>
@@ -251,6 +294,21 @@ const DateTimePicker = ({
                 {...wheelProps}
               />
             </div>
+            {!use24Hours && (
+              <div style={{ flex: 1 }}>
+                <Wheel
+                  items={periods}
+                  value={selectedDate.period}
+                  onChange={handlePeriodChange}
+                  textColor={colors.textColor}
+                  selectedTextColor={colors.selectedTextColor}
+                  highlightColor={colors.highlightColor}
+                  highlightBorderColor={colors.highlightBorderColor}
+                  fontSize="14px" // Specify font size
+                  {...wheelProps}
+                />
+              </div>
+            )}
           </>
         )}
       </div>

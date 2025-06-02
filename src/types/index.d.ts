@@ -49,6 +49,11 @@ export interface DateTimePickerProps {
    */
   showTime?: boolean;
   /**
+   * Whether to use 24-hour format
+   * @default true
+   */
+  use24Hours?: boolean;
+  /**
    * Props to pass to all wheels
    * @default {}
    */
@@ -132,6 +137,11 @@ export interface CalendarTimePickerProps {
    * @default true
    */
   showTime?: boolean;
+  /**
+   * Whether to use 24-hour format
+   * @default true
+   */
+  use24Hours?: boolean;
   /**
    * Props to pass to all wheels
    * @default {}
