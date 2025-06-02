@@ -4,7 +4,7 @@ A modern, customizable date and time picker library for React applications, insp
 
 Originally created for [Crisli App](https://crisli.app) and now available as an open-source library for the React community.
 
-## 🎡 [Live Demo](https://crisli.app) | [NPM Package](https://www.npmjs.com/package/crisli-picker) | [GitHub](https://github.com/rupok/crisli-picker)
+## 🎡 [Live Demo](https://rupok.github.io/crisli-picker/) | [NPM Package](https://www.npmjs.com/package/crisli-picker) | [GitHub](https://github.com/rupok/crisli-picker)
 
 ## Features
 
@@ -278,7 +278,7 @@ function MyComponent() {
 Experience Crisli Picker with our comprehensive demo applications:
 
 ### **🎨 Interactive Demo** (Recommended)
-**URL**: http://localhost:3001 (when running locally) | [Live Demo](https://crisli.app)
+**URL**: http://localhost:3001 (when running locally) | [Live Demo](https://rupok.github.io/crisli-picker/)
 
 A modern, full-featured demo built with Vite + React featuring:
 
