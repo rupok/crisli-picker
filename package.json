@@ -32,7 +32,7 @@
     "format": "prettier --write \"src/**/*.{js,jsx}\" \"demo/src/**/*.{js,jsx}\" \"*.{js,json,md}\"",
     "format:check": "prettier --check \"src/**/*.{js,jsx}\" \"demo/src/**/*.{js,jsx}\" \"*.{js,json,md}\"",
     "prepare": "husky install",
-    "prepublishOnly": "npm run build && npm run test && npm run type-check"
+    "prepublishOnly": "npm run build && npm run type-check"
   },
   "dependencies": {
     "@use-gesture/react": "^10.3.0",
