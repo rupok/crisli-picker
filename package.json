@@ -1,7 +1,7 @@
 {
   "name": "crisli-picker",
-  "version": "0.2.1",
-  "description": "A customizable wheel picker for React applications with date/time selection and booking system support",
+  "version": "1.0.0",
+  "description": "A modern, customizable date and time picker library for React applications with configurable time intervals and booking system support",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "types": "src/types/index.d.ts",
@@ -56,7 +56,14 @@
     "appointment",
     "disable-past",
     "future-only",
-    "reservation"
+    "reservation",
+    "time-intervals",
+    "time-steps",
+    "minute-intervals",
+    "hour-intervals",
+    "15-minute",
+    "30-minute",
+    "appointment-booking"
   ],
   "author": "Nazmul H. Rupok",
   "license": "MIT",

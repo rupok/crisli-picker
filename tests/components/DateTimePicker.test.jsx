@@ -195,4 +195,32 @@ describe('DateTimePicker Component', () => {
     const container = document.querySelector('.crisli-datetime-picker');
     expect(container).toBeInTheDocument();
   });
+
+  // Time step tests
+  test('handles minuteStep prop correctly', () => {
+    const validDate = new Date('2023-06-15T14:30:00');
+    expect(() => {
+      render(<DateTimePicker value={validDate} onChange={jest.fn()} minuteStep={15} />);
+    }).not.toThrow();
+  });
+
+  test('handles hourStep prop correctly', () => {
+    const validDate = new Date('2023-06-15T14:30:00');
+    expect(() => {
+      render(<DateTimePicker value={validDate} onChange={jest.fn()} hourStep={2} />);
+    }).not.toThrow();
+  });
+
+  test('handles both minuteStep and hourStep props', () => {
+    const validDate = new Date('2023-06-15T14:30:00');
+    expect(() => {
+      render(<DateTimePicker value={validDate} onChange={jest.fn()} minuteStep={30} hourStep={3} />);
+    }).not.toThrow();
+  });
+
+  test('handles time step with null value gracefully', () => {
+    expect(() => {
+      render(<DateTimePicker value={null} onChange={jest.fn()} minuteStep={15} hourStep={2} />);
+    }).not.toThrow();
+  });
 });

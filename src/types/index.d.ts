@@ -55,6 +55,16 @@ export interface DateTimePickerProps {
    */
   use24Hours?: boolean;
   /**
+   * Step interval for minutes (e.g., 15 for 15-minute intervals)
+   * @default 1
+   */
+  minuteStep?: number;
+  /**
+   * Step interval for hours (e.g., 2 for 2-hour intervals)
+   * @default 1
+   */
+  hourStep?: number;
+  /**
    * Whether to disable past dates and times
    * @default false
    */
@@ -86,6 +96,16 @@ export interface TimePickerProps {
    * @default true
    */
   use24Hours?: boolean;
+  /**
+   * Step interval for minutes (e.g., 15 for 15-minute intervals)
+   * @default 1
+   */
+  minuteStep?: number;
+  /**
+   * Step interval for hours (e.g., 2 for 2-hour intervals)
+   * @default 1
+   */
+  hourStep?: number;
   /**
    * Whether to disable past times (for current day)
    * @default false
@@ -154,6 +174,16 @@ export interface CalendarTimePickerProps {
    */
   use24Hours?: boolean;
   /**
+   * Step interval for minutes (e.g., 15 for 15-minute intervals)
+   * @default 1
+   */
+  minuteStep?: number;
+  /**
+   * Step interval for hours (e.g., 2 for 2-hour intervals)
+   * @default 1
+   */
+  hourStep?: number;
+  /**
    * Whether to disable past dates and times
    * @default false
    */
@@ -186,6 +216,21 @@ export interface HorizontalCalendarTimePickerProps {
    */
   showTime?: boolean;
   /**
+   * Whether to use 24-hour format
+   * @default true
+   */
+  use24Hour?: boolean;
+  /**
+   * Step interval for minutes (e.g., 15 for 15-minute intervals)
+   * @default 1
+   */
+  minuteStep?: number;
+  /**
+   * Step interval for hours (e.g., 2 for 2-hour intervals)
+   * @default 1
+   */
+  hourStep?: number;
+  /**
    * Whether to disable past dates and times
    * @default false
    */
@@ -208,11 +253,6 @@ export interface HorizontalCalendarTimePickerProps {
    * Additional inline styles for the component
    */
   style?: React.CSSProperties;
-  /**
-   * Whether to use 24-hour format
-   * @default true
-   */
-  use24Hour?: boolean;
   /**
    * Format for displaying time
    * @default 'HH:mm'

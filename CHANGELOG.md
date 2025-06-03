@@ -5,6 +5,73 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0] - 2025-01-02
+
+### 🎉 MAJOR FEATURE: Time Step Intervals
+
+**⏰ Configurable Time Intervals** - The most requested feature is here!
+
+Configure time intervals for more efficient time selection - perfect for appointment booking and scheduling systems:
+
+```jsx
+// 15-minute intervals: 00:00, 00:15, 00:30, 00:45, etc.
+<TimePicker minuteStep={15} />
+
+// 30-minute intervals with custom hour steps
+<DateTimePicker minuteStep={30} hourStep={2} />
+
+// Perfect for appointment booking
+<CalendarTimePicker minuteStep={15} disablePast={true} />
+```
+
+### 🚀 New Props Added to All Time Picker Components
+- **`minuteStep`** (number, default: 1) - Step interval for minutes (e.g., 15 for 15-minute intervals)
+- **`hourStep`** (number, default: 1) - Step interval for hours (e.g., 2 for 2-hour intervals)
+
+### 🔧 Enhanced Components
+- **✅ TimePicker**: Full time step support with smart value snapping
+- **✅ DateTimePicker**: Time step intervals for both date and time selection
+- **✅ CalendarTimePicker**: Calendar with configurable time intervals
+- **✅ HorizontalCalendarTimePicker**: Horizontal layout with time step support
+
+### 🎯 Perfect Use Cases
+- 📅 **Appointment Booking** (15 or 30-minute slots)
+- 🏥 **Medical Scheduling** (15-minute intervals)
+- 🎬 **Event Planning** (30-minute or 1-hour slots)
+- 🚗 **Service Booking** (Custom intervals)
+- 📞 **Meeting Scheduling** (15 or 30-minute meetings)
+
+### ⚡ Technical Features
+- **Smart Value Snapping** - Automatically snaps to nearest valid interval
+- **Independent Control** - Set different steps for minutes and hours
+- **Backward Compatible** - Default behavior unchanged (step = 1)
+- **Performance Optimized** - Only generates valid time options
+- **Memory Efficient** - Reduced DOM elements with step-based generation
+
+### 🧪 Testing
+- Comprehensive test coverage for all time step scenarios
+- Null value handling with time steps
+- Edge case testing for various step combinations
+- Backward compatibility verification
+
+### 📚 Documentation
+- Extensive README.md updates with time step examples
+- Updated API documentation for all components
+- Enhanced demo application with interactive time step examples
+- Real-world use case documentation
+
+### 🐛 Bug Fixes
+- Fixed null value handling in TimePicker, DateTimePicker, CalendarTimePicker, and HorizontalCalendarTimePicker components
+- Resolved TypeError when value prop is null/undefined (Issue #8)
+- Improved error handling for edge cases
+
+## [0.2.1] - 2025-01-02
+
+### 🐛 Bug Fixes
+- Fixed null value handling in date/time picker components
+- Resolved TypeError when value prop is null/undefined (Issue #8)
+- Added comprehensive test coverage for null value scenarios
+
 ## [0.2.0] - 2025-01-02
 
 ### 🎉 Added

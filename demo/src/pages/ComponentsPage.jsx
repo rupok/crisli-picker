@@ -22,6 +22,14 @@ const ComponentsPage = ({ theme }) => {
   const [horizontalDateFuture, setHorizontalDateFuture] = useState(new Date())
   const [selectedOption, setSelectedOption] = useState('option2')
 
+  // Time step examples
+  const [time15min, setTime15min] = useState(new Date())
+  const [time30min, setTime30min] = useState(new Date())
+  const [time5min, setTime5min] = useState(new Date())
+  const [dateTime15min, setDateTime15min] = useState(new Date())
+  const [calendarTime15min, setCalendarTime15min] = useState(new Date())
+  const [horizontalTime15min, setHorizontalTime15min] = useState(new Date())
+
   const options = [
     { value: 'option1', label: 'Option 1' },
     { value: 'option2', label: 'Option 2' },
@@ -449,6 +457,205 @@ const options = [
         </div>
       </div>
 
+      {/* Time Step Feature Section */}
+      <div style={{ marginTop: '4rem', textAlign: 'center' }}>
+        <h2 style={{ fontSize: '2rem', marginBottom: '1rem', background: 'linear-gradient(135deg, #667eea, #764ba2)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+          ⏰ Time Step Intervals
+        </h2>
+        <p style={{ color: theme === 'light' ? '#666' : '#bbb', fontSize: '1.1rem', marginBottom: '3rem' }}>
+          Configure time intervals for more efficient time selection - perfect for appointment booking and scheduling systems
+        </p>
+      </div>
+
+      <div className="demo-grid">
+        <div className="demo-section">
+          <h3>🕒 TimePicker (15-minute steps)</h3>
+          <p style={{ color: theme === 'light' ? '#666' : '#bbb', marginBottom: '1rem' }}>
+            Time picker with 15-minute intervals: 00:00, 00:15, 00:30, 00:45, etc.
+          </p>
+          <div className="selected-value">
+            Selected: {time15min ? time15min.toLocaleTimeString() : 'No time selected'}
+          </div>
+          <TimePicker
+            value={time15min || new Date()}
+            onChange={setTime15min}
+            theme={theme}
+            use24Hours={true}
+            minuteStep={15}
+          />
+
+          <div className="code-block">
+            <pre>{`import { TimePicker } from 'crisli-picker';
+
+<TimePicker
+  value={time}
+  onChange={setTime}
+  theme="light"
+  use24Hours={true}
+  minuteStep={15}  // ⏰ 15-minute intervals
+/>`}</pre>
+          </div>
+        </div>
+
+        <div className="demo-section">
+          <h3>🕒 TimePicker (30-minute steps)</h3>
+          <p style={{ color: theme === 'light' ? '#666' : '#bbb', marginBottom: '1rem' }}>
+            Time picker with 30-minute intervals: 00:00, 00:30, 01:00, 01:30, etc.
+          </p>
+          <div className="selected-value">
+            Selected: {time30min ? time30min.toLocaleTimeString() : 'No time selected'}
+          </div>
+          <TimePicker
+            value={time30min || new Date()}
+            onChange={setTime30min}
+            theme={theme}
+            use24Hours={false}
+            minuteStep={30}
+          />
+
+          <div className="code-block">
+            <pre>{`import { TimePicker } from 'crisli-picker';
+
+<TimePicker
+  value={time}
+  onChange={setTime}
+  theme="light"
+  use24Hours={false}
+  minuteStep={30}  // ⏰ 30-minute intervals
+/>`}</pre>
+          </div>
+        </div>
+
+        <div className="demo-section">
+          <h3>🕒 TimePicker (5-minute + 2-hour steps)</h3>
+          <p style={{ color: theme === 'light' ? '#666' : '#bbb', marginBottom: '1rem' }}>
+            Custom intervals: 5-minute steps with 2-hour steps (00:00, 00:05, 00:10... but only 00:xx, 02:xx, 04:xx hours).
+          </p>
+          <div className="selected-value">
+            Selected: {time5min ? time5min.toLocaleTimeString() : 'No time selected'}
+          </div>
+          <TimePicker
+            value={time5min || new Date()}
+            onChange={setTime5min}
+            theme={theme}
+            use24Hours={true}
+            minuteStep={5}
+            hourStep={2}
+          />
+
+          <div className="code-block">
+            <pre>{`import { TimePicker } from 'crisli-picker';
+
+<TimePicker
+  value={time}
+  onChange={setTime}
+  theme="light"
+  use24Hours={true}
+  minuteStep={5}   // ⏰ 5-minute intervals
+  hourStep={2}     // ⏰ 2-hour intervals
+/>`}</pre>
+          </div>
+        </div>
+
+        <div className="demo-section">
+          <h3>📅 DateTimePicker (15-minute steps)</h3>
+          <p style={{ color: theme === 'light' ? '#666' : '#bbb', marginBottom: '1rem' }}>
+            Full date and time picker with 15-minute time intervals.
+          </p>
+          <div className="selected-value">
+            Selected: {dateTime15min ? dateTime15min.toLocaleString() : 'No date selected'}
+          </div>
+          <DateTimePicker
+            value={dateTime15min || new Date()}
+            onChange={setDateTime15min}
+            theme={theme}
+            showTime={true}
+            use24Hours={false}
+            minuteStep={15}
+          />
+
+          <div className="code-block">
+            <pre>{`import { DateTimePicker } from 'crisli-picker';
+
+<DateTimePicker
+  value={dateTime}
+  onChange={setDateTime}
+  theme="light"
+  showTime={true}
+  use24Hours={false}
+  minuteStep={15}  // ⏰ 15-minute intervals
+/>`}</pre>
+          </div>
+        </div>
+      </div>
+
+      {/* Full width calendar examples with time steps */}
+      <div className="demo-section" style={{ marginTop: '2rem', maxWidth: '900px', margin: '2rem auto 0' }}>
+        <h3>📆 CalendarTimePicker (15-minute steps)</h3>
+        <p style={{ color: theme === 'light' ? '#666' : '#bbb', marginBottom: '1rem' }}>
+          Calendar-based picker with 15-minute time intervals - ideal for appointment booking systems.
+        </p>
+        <div className="selected-value">
+          Selected: {calendarTime15min ? calendarTime15min.toLocaleString() : 'No date selected'}
+        </div>
+        <CalendarTimePicker
+          value={calendarTime15min || new Date()}
+          onChange={setCalendarTime15min}
+          theme={theme}
+          showTime={true}
+          use24Hours={true}
+          minuteStep={15}
+          disablePast={true}
+        />
+
+        <div className="code-block">
+          <pre>{`import { CalendarTimePicker } from 'crisli-picker';
+
+<CalendarTimePicker
+  value={dateTime}
+  onChange={setDateTime}
+  theme="light"
+  showTime={true}
+  use24Hours={true}
+  minuteStep={15}    // ⏰ 15-minute intervals
+  disablePast={true} // 🚫 Perfect for bookings
+/>`}</pre>
+        </div>
+      </div>
+
+      <div className="demo-section" style={{ marginTop: '2rem', maxWidth: '900px', margin: '2rem auto 0' }}>
+        <h3>📅 HorizontalCalendarTimePicker (15-minute steps)</h3>
+        <p style={{ color: theme === 'light' ? '#666' : '#bbb', marginBottom: '1rem' }}>
+          Horizontal layout with 15-minute time intervals - perfect for scheduling interfaces.
+        </p>
+        <div className="selected-value">
+          Selected: {horizontalTime15min ? horizontalTime15min.toLocaleString() : 'No date selected'}
+        </div>
+        <HorizontalCalendarTimePicker
+          value={horizontalTime15min || new Date()}
+          onChange={setHorizontalTime15min}
+          theme={theme}
+          showTime={true}
+          use24Hour={false}
+          minuteStep={15}
+          disablePast={true}
+        />
+
+        <div className="code-block">
+          <pre>{`import { HorizontalCalendarTimePicker } from 'crisli-picker';
+
+<HorizontalCalendarTimePicker
+  value={dateTime}
+  onChange={setDateTime}
+  theme="light"
+  showTime={true}
+  use24Hour={false}
+  minuteStep={15}    // ⏰ 15-minute intervals
+  disablePast={true} // 🚫 Perfect for bookings
+/>`}</pre>
+        </div>
+      </div>
+
       {/* Component Features */}
       <div style={{ marginTop: '4rem', textAlign: 'center' }}>
         <h2 style={{ fontSize: '2rem', marginBottom: '2rem' }}>✨ Component Features</h2>
@@ -487,6 +694,11 @@ const options = [
           <div className="demo-section">
             <h4>🕐 12/24 Hour</h4>
             <p>Support for both 12-hour (AM/PM) and 24-hour time formats</p>
+          </div>
+
+          <div className="demo-section">
+            <h4>⏰ Time Steps</h4>
+            <p>Configurable time intervals (5, 15, 30 minutes) for efficient time selection</p>
           </div>
         </div>
       </div>

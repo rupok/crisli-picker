@@ -1,6 +1,6 @@
 # Crisli Picker
 
-A modern, customizable date and time picker library for React applications, inspired by mobile date/time pickers.
+A modern, customizable date and time picker library for React applications with configurable time intervals, inspired by mobile date/time pickers.
 
 Originally created for [Crisli App](https://crisli.app) and now available as an open-source library for the React community.
 
@@ -12,6 +12,7 @@ Originally created for [Crisli App](https://crisli.app) and now available as an 
 - **Smooth wheel-based pickers** with mobile-like scrolling and momentum
 - **Calendar date selection** with intuitive interface
 - **Time selection** with hour and minute wheels (**12-hour with AM/PM** or **24-hour formats**)
+- **⏰ Time step intervals** - Configure 5, 15, 30-minute intervals for appointment booking
 - **Generic wheel picker** for custom option lists
 - **Horizontal calendar layout** for better space utilization
 
@@ -118,6 +119,67 @@ function MyComponent() {
   );
 }
 ```
+
+### ⏰ Time Step Intervals (NEW!)
+
+Configure time intervals for more efficient time selection - perfect for appointment booking and scheduling systems:
+
+```jsx
+import { TimePicker, DateTimePicker, CalendarTimePicker } from 'crisli-picker';
+
+// 15-minute intervals: 00:00, 00:15, 00:30, 00:45, etc.
+<TimePicker
+  value={time}
+  onChange={setTime}
+  minuteStep={15}  // ⏰ 15-minute intervals
+  use24Hours={true}
+/>
+
+// 30-minute intervals with 12-hour format
+<TimePicker
+  value={time}
+  onChange={setTime}
+  minuteStep={30}  // ⏰ 30-minute intervals
+  use24Hours={false}
+/>
+
+// Custom intervals: 5-minute steps with 2-hour steps
+<TimePicker
+  value={time}
+  onChange={setTime}
+  minuteStep={5}   // ⏰ 5-minute intervals
+  hourStep={2}     // ⏰ 2-hour intervals (00:xx, 02:xx, 04:xx, etc.)
+/>
+
+// Works with all time picker components
+<DateTimePicker
+  value={dateTime}
+  onChange={setDateTime}
+  minuteStep={15}  // ⏰ Perfect for appointment booking
+  disablePast={true}
+/>
+
+<CalendarTimePicker
+  value={dateTime}
+  onChange={setDateTime}
+  minuteStep={30}  // ⏰ 30-minute scheduling slots
+  hourStep={1}     // ⏰ Every hour (default)
+/>
+```
+
+**Perfect for:**
+- 📅 **Appointment Booking** (15 or 30-minute slots)
+- 🏥 **Medical Scheduling** (15-minute intervals)
+- 🎬 **Event Planning** (30-minute or 1-hour slots)
+- 🚗 **Service Booking** (Custom intervals)
+- 📞 **Meeting Scheduling** (15 or 30-minute meetings)
+
+**Features:**
+- ✅ **Smart Value Snapping** - Automatically snaps to nearest valid interval
+- ✅ **Independent Control** - Set different steps for minutes and hours
+- ✅ **Backward Compatible** - Default behavior unchanged (step = 1)
+- ✅ **Performance Optimized** - Only generates valid time options
+- ✅ **Works with All Components** - TimePicker, DateTimePicker, CalendarTimePicker, HorizontalCalendarTimePicker
 
 ### 12-Hour Format Support
 
@@ -257,6 +319,8 @@ function MyComponent() {
 | `onChange` | `function` | required | Callback when date changes |
 | `showTime` | `boolean` | `true` | Whether to show time picker |
 | `use24Hours` | `boolean` | `true` | Whether to use 24-hour format |
+| `minuteStep` | `number` | `1` | ⏰ **NEW!** Step interval for minutes (e.g., 15 for 15-minute intervals) |
+| `hourStep` | `number` | `1` | ⏰ **NEW!** Step interval for hours (e.g., 2 for 2-hour intervals) |
 | `disablePast` | `boolean` | `false` | Whether to disable past dates/times |
 | `wheelProps` | `object` | `{}` | Props to pass to all wheels |
 | `theme` | `string` | `'light'` | Theme for the picker ('light' or 'dark') |
@@ -268,6 +332,8 @@ function MyComponent() {
 | `value` | `Date` | `new Date()` | The selected time |
 | `onChange` | `function` | required | Callback when time changes |
 | `use24Hours` | `boolean` | `true` | Whether to use 24-hour format |
+| `minuteStep` | `number` | `1` | ⏰ **NEW!** Step interval for minutes (e.g., 15 for 15-minute intervals) |
+| `hourStep` | `number` | `1` | ⏰ **NEW!** Step interval for hours (e.g., 2 for 2-hour intervals) |
 | `disablePast` | `boolean` | `false` | Whether to disable past times (for today) |
 | `wheelProps` | `object` | `{}` | Props to pass to all wheels |
 | `theme` | `string` | `'light'` | Theme for the picker ('light' or 'dark') |
@@ -280,6 +346,8 @@ function MyComponent() {
 | `onChange` | `function` | required | Callback when date/time changes |
 | `showTime` | `boolean` | `true` | Whether to show time picker |
 | `use24Hours` | `boolean` | `true` | Whether to use 24-hour format |
+| `minuteStep` | `number` | `1` | ⏰ **NEW!** Step interval for minutes (e.g., 15 for 15-minute intervals) |
+| `hourStep` | `number` | `1` | ⏰ **NEW!** Step interval for hours (e.g., 2 for 2-hour intervals) |
 | `disablePast` | `boolean` | `false` | Whether to disable past dates/times |
 | `wheelProps` | `object` | `{}` | Props to pass to all wheels |
 | `theme` | `string` | `'light'` | Theme for the picker ('light' or 'dark') |
@@ -292,6 +360,8 @@ function MyComponent() {
 | `onChange` | `function` | required | Callback when date/time changes |
 | `showTime` | `boolean` | `true` | Whether to show time picker |
 | `use24Hour` | `boolean` | `true` | Whether to use 24-hour format |
+| `minuteStep` | `number` | `1` | ⏰ **NEW!** Step interval for minutes (e.g., 15 for 15-minute intervals) |
+| `hourStep` | `number` | `1` | ⏰ **NEW!** Step interval for hours (e.g., 2 for 2-hour intervals) |
 | `disablePast` | `boolean` | `false` | Whether to disable past dates/times |
 | `wheelProps` | `object` | `{}` | Props to pass to all wheels |
 | `theme` | `string` | `'light'` | Theme for the picker ('light' or 'dark') |

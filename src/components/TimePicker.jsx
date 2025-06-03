@@ -8,6 +8,8 @@ import Wheel from './Wheel';
  * @param {Date} props.value - Currently selected time
  * @param {Function} props.onChange - Callback when time changes
  * @param {boolean} props.use24Hours - Whether to use 24-hour format
+ * @param {number} props.minuteStep - Step interval for minutes (default: 1)
+ * @param {number} props.hourStep - Step interval for hours (default: 1)
  * @param {Object} props.wheelProps - Props to pass to all wheels
  * @param {string} props.theme - Theme for the picker ('light' or 'dark')
  */
@@ -16,6 +18,8 @@ const TimePicker = ({
   onChange,
   use24Hours = true,
   disablePast = false,
+  minuteStep = 1,
+  hourStep = 1,
   wheelProps = {},
   theme = 'light'
 }) => {
@@ -40,6 +44,22 @@ const TimePicker = ({
     }
   }, []);
 
+  // Helper functions for step intervals
+  const snapToNearestStep = React.useCallback((value, step, max) => {
+    if (step <= 1) return value;
+    const snapped = Math.round(value / step) * step;
+    return Math.min(snapped, max);
+  }, []);
+
+  const snapMinuteToStep = React.useCallback((minute) => {
+    return snapToNearestStep(minute, minuteStep, 59);
+  }, [minuteStep, snapToNearestStep]);
+
+  const snapHourToStep = React.useCallback((hour) => {
+    const maxHour = use24Hours ? 23 : 12;
+    return snapToNearestStep(hour, hourStep, maxHour);
+  }, [hourStep, use24Hours, snapToNearestStep]);
+
   // Helper functions for disablePast functionality
   const isTimeInPast = React.useCallback((hour, minute) => {
     if (!disablePast) return false;
@@ -53,39 +73,45 @@ const TimePicker = ({
   // Generate dynamic arrays for hours and minutes
   const generateHours = React.useCallback((period = null) => {
     if (use24Hours) {
-      return Array.from({ length: 24 }, (_, i) => {
+      const hours = [];
+      for (let i = 0; i < 24; i += hourStep) {
         const isPastTime = isTimeInPast(i, 0);
-        return {
+        hours.push({
           value: i,
           label: i.toString().padStart(2, '0'),
           disabled: isPastTime
-        };
-      });
+        });
+      }
+      return hours;
     } else {
-      return Array.from({ length: 12 }, (_, i) => {
-        const hour = i === 0 ? 12 : i;
+      const hours = [];
+      for (let i = 1; i <= 12; i += hourStep) {
+        const hour = i;
         const hour24 = period ? to24HourFormat(hour, period) : hour;
         const isPastTime = isTimeInPast(hour24, 0);
-        return {
+        hours.push({
           value: hour,
           label: hour.toString(),
           disabled: isPastTime
-        };
-      });
+        });
+      }
+      return hours;
     }
-  }, [use24Hours, disablePast, to24HourFormat, isTimeInPast]);
+  }, [use24Hours, disablePast, to24HourFormat, isTimeInPast, hourStep]);
 
   const generateMinutes = React.useCallback((hour, period = null) => {
-    return Array.from({ length: 60 }, (_, i) => {
+    const minutes = [];
+    for (let i = 0; i < 60; i += minuteStep) {
       const hour24 = use24Hours ? hour : to24HourFormat(hour, period);
       const isPastTime = isTimeInPast(hour24, i);
-      return {
+      minutes.push({
         value: i,
         label: i.toString().padStart(2, '0'),
         disabled: isPastTime
-      };
-    });
-  }, [use24Hours, disablePast, to24HourFormat, isTimeInPast]);
+      });
+    }
+    return minutes;
+  }, [use24Hours, disablePast, to24HourFormat, isTimeInPast, minuteStep]);
 
   const periods = [
     { value: 'AM', label: 'AM' },
@@ -95,9 +121,12 @@ const TimePicker = ({
   // State for selected values
   const [selectedTime, setSelectedTime] = useState(() => {
     const currentValue = value || new Date();
+    const originalHour = use24Hours ? currentValue.getHours() : to12HourFormat(currentValue.getHours());
+    const originalMinute = currentValue.getMinutes();
+
     return {
-      hour: use24Hours ? currentValue.getHours() : to12HourFormat(currentValue.getHours()),
-      minute: currentValue.getMinutes(),
+      hour: snapHourToStep(originalHour),
+      minute: snapMinuteToStep(originalMinute),
       period: getPeriod(currentValue.getHours())
     };
   });

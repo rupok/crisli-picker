@@ -55,4 +55,32 @@ describe('TimePicker Component', () => {
       rerender(<TimePicker value={null} onChange={mockOnChange} />);
     }).not.toThrow();
   });
+
+  // Time step tests
+  test('handles minuteStep prop correctly', () => {
+    const validDate = new Date('2023-06-15T14:30:00');
+    expect(() => {
+      render(<TimePicker value={validDate} onChange={jest.fn()} minuteStep={15} />);
+    }).not.toThrow();
+  });
+
+  test('handles hourStep prop correctly', () => {
+    const validDate = new Date('2023-06-15T14:30:00');
+    expect(() => {
+      render(<TimePicker value={validDate} onChange={jest.fn()} hourStep={2} />);
+    }).not.toThrow();
+  });
+
+  test('handles both minuteStep and hourStep props', () => {
+    const validDate = new Date('2023-06-15T14:30:00');
+    expect(() => {
+      render(<TimePicker value={validDate} onChange={jest.fn()} minuteStep={15} hourStep={2} />);
+    }).not.toThrow();
+  });
+
+  test('handles time step with null value gracefully', () => {
+    expect(() => {
+      render(<TimePicker value={null} onChange={jest.fn()} minuteStep={15} hourStep={2} />);
+    }).not.toThrow();
+  });
 });
