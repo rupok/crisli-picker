@@ -63,8 +63,8 @@ const CalendarTimePicker = ({
   }, [disablePast, showTime, today, now]);
 
   // State for the calendar
-  const [currentMonth, setCurrentMonth] = useState(new Date(value));
-  const [selectedDate, setSelectedDate] = useState(new Date(value));
+  const [currentMonth, setCurrentMonth] = useState(new Date(value || new Date()));
+  const [selectedDate, setSelectedDate] = useState(new Date(value || new Date()));
 
   // Generate dynamic arrays for hours and minutes
   const generateHours = React.useCallback((date, period = null) => {
@@ -104,10 +104,13 @@ const CalendarTimePicker = ({
   }, [use24Hours, disablePast, to24HourFormat, isTimeInPast]);
 
   // State for time
-  const [selectedTime, setSelectedTime] = useState({
-    hour: use24Hours ? value.getHours() : to12HourFormat(value.getHours()),
-    minute: value.getMinutes(),
-    period: getPeriod(value.getHours())
+  const [selectedTime, setSelectedTime] = useState(() => {
+    const currentValue = value || new Date();
+    return {
+      hour: use24Hours ? currentValue.getHours() : to12HourFormat(currentValue.getHours()),
+      minute: currentValue.getMinutes(),
+      period: getPeriod(currentValue.getHours())
+    };
   });
 
   // Generate dynamic arrays based on current selection
@@ -136,8 +139,9 @@ const CalendarTimePicker = ({
     newDate.setMinutes(selectedTime.minute);
 
     // Prevent unnecessary updates
+    const currentValue = value || new Date();
     if (
-      newDate.getTime() !== value.getTime()
+      newDate.getTime() !== currentValue.getTime()
     ) {
       onChange(newDate);
     }

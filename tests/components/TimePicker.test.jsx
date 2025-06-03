@@ -1,0 +1,58 @@
+import React from 'react';
+import { render } from '@testing-library/react';
+import TimePicker from '../../src/components/TimePicker';
+
+describe('TimePicker Component', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('handles null value gracefully', () => {
+    // This test specifically addresses the bug reported in issue #8
+    expect(() => {
+      render(<TimePicker value={null} onChange={jest.fn()} />);
+    }).not.toThrow();
+  });
+
+  test('handles undefined value gracefully', () => {
+    // This test specifically addresses the bug reported in issue #8
+    expect(() => {
+      render(<TimePicker value={undefined} onChange={jest.fn()} />);
+    }).not.toThrow();
+  });
+
+  test('renders with valid date value', () => {
+    const validDate = new Date('2023-06-15T14:30:00');
+    expect(() => {
+      render(<TimePicker value={validDate} onChange={jest.fn()} />);
+    }).not.toThrow();
+  });
+
+  test('handles null to valid date transition', () => {
+    const validDate = new Date('2023-06-15T14:30:00');
+    const mockOnChange = jest.fn();
+
+    const { rerender } = render(
+      <TimePicker value={null} onChange={mockOnChange} />
+    );
+
+    // Change from null to valid date should not crash
+    expect(() => {
+      rerender(<TimePicker value={validDate} onChange={mockOnChange} />);
+    }).not.toThrow();
+  });
+
+  test('handles valid date to null transition', () => {
+    const validDate = new Date('2023-06-15T14:30:00');
+    const mockOnChange = jest.fn();
+
+    const { rerender } = render(
+      <TimePicker value={validDate} onChange={mockOnChange} />
+    );
+
+    // Change from valid date to null should not crash
+    expect(() => {
+      rerender(<TimePicker value={null} onChange={mockOnChange} />);
+    }).not.toThrow();
+  });
+});
