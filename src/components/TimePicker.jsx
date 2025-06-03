@@ -93,10 +93,13 @@ const TimePicker = ({
   ];
 
   // State for selected values
-  const [selectedTime, setSelectedTime] = useState({
-    hour: use24Hours ? value.getHours() : to12HourFormat(value.getHours()),
-    minute: value.getMinutes(),
-    period: getPeriod(value.getHours())
+  const [selectedTime, setSelectedTime] = useState(() => {
+    const currentValue = value || new Date();
+    return {
+      hour: use24Hours ? currentValue.getHours() : to12HourFormat(currentValue.getHours()),
+      minute: currentValue.getMinutes(),
+      period: getPeriod(currentValue.getHours())
+    };
   });
 
   // Generate dynamic arrays based on current selection
@@ -112,7 +115,8 @@ const TimePicker = ({
   // Update the parent component when values change
   useEffect(() => {
     // Skip the initial render to prevent infinite loops
-    const newDate = new Date(value);
+    const currentValue = value || new Date();
+    const newDate = new Date(currentValue);
 
     if (use24Hours) {
       newDate.setHours(selectedTime.hour);
@@ -125,8 +129,8 @@ const TimePicker = ({
 
     // Prevent unnecessary updates by checking if the time has actually changed
     if (
-      newDate.getHours() !== value.getHours() ||
-      newDate.getMinutes() !== value.getMinutes()
+      newDate.getHours() !== currentValue.getHours() ||
+      newDate.getMinutes() !== currentValue.getMinutes()
     ) {
       onChange(newDate);
     }

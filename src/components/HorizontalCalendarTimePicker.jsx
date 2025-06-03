@@ -70,14 +70,17 @@ const HorizontalCalendarTimePicker = ({
   }, [disablePast, showTime, today, now]);
 
   // State for the calendar
-  const [currentMonth, setCurrentMonth] = useState(new Date(value));
-  const [selectedDate, setSelectedDate] = useState(new Date(value));
+  const [currentMonth, setCurrentMonth] = useState(new Date(value || new Date()));
+  const [selectedDate, setSelectedDate] = useState(new Date(value || new Date()));
 
   // State for time
-  const [selectedTime, setSelectedTime] = useState({
-    hour: use24Hour ? value.getHours() : to12HourFormat(value.getHours()),
-    minute: value.getMinutes(),
-    period: getPeriod(value.getHours())
+  const [selectedTime, setSelectedTime] = useState(() => {
+    const currentValue = value || new Date();
+    return {
+      hour: use24Hour ? currentValue.getHours() : to12HourFormat(currentValue.getHours()),
+      minute: currentValue.getMinutes(),
+      period: getPeriod(currentValue.getHours())
+    };
   });
 
   // Generate dynamic arrays for hours and minutes
@@ -143,7 +146,8 @@ const HorizontalCalendarTimePicker = ({
     newDate.setMinutes(selectedTime.minute);
 
     // Prevent unnecessary updates
-    if (newDate.getTime() !== value.getTime()) {
+    const currentValue = value || new Date();
+    if (newDate.getTime() !== currentValue.getTime()) {
       onChange(newDate);
     }
   }, [selectedDate, selectedTime, onChange, value, use24Hour, to24HourFormat]);
