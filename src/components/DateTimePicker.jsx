@@ -94,7 +94,7 @@ const DateTimePicker = ({
         disabled: isPastDate
       };
     });
-  }, [disablePast, isDateInPast]);
+  }, [isDateInPast]);
 
   const generateMonths = React.useCallback((year) => {
     return Array.from({ length: 12 }, (_, i) => {
@@ -144,7 +144,7 @@ const DateTimePicker = ({
       }
       return hours;
     }
-  }, [use24Hours, disablePast, to24HourFormat, isTimeInPast, hourStep]);
+  }, [use24Hours, to24HourFormat, isTimeInPast, hourStep]);
 
   const generateMinutes = React.useCallback((year, month, day, hour, period = null) => {
     const minutes = [];
@@ -158,7 +158,7 @@ const DateTimePicker = ({
       });
     }
     return minutes;
-  }, [use24Hours, disablePast, to24HourFormat, isTimeInPast, minuteStep]);
+  }, [use24Hours, to24HourFormat, isTimeInPast, minuteStep]);
 
   const periods = [
     { value: 'AM', label: 'AM' },

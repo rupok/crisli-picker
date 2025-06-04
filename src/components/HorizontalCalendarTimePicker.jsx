@@ -133,7 +133,7 @@ const HorizontalCalendarTimePicker = ({
       }
       return hours;
     }
-  }, [use24Hour, disablePast, to24HourFormat, isTimeInPast, hourStep]);
+  }, [use24Hour, to24HourFormat, isTimeInPast, hourStep]);
 
   const generateMinutes = React.useCallback((date, hour, period = null) => {
     const minutes = [];
@@ -147,7 +147,7 @@ const HorizontalCalendarTimePicker = ({
       });
     }
     return minutes;
-  }, [use24Hour, disablePast, to24HourFormat, isTimeInPast, minuteStep]);
+  }, [use24Hour, to24HourFormat, isTimeInPast, minuteStep]);
 
   const periods = [
     { value: 'AM', label: 'AM' },

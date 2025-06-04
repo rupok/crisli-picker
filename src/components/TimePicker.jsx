@@ -97,7 +97,7 @@ const TimePicker = ({
       }
       return hours;
     }
-  }, [use24Hours, disablePast, to24HourFormat, isTimeInPast, hourStep]);
+  }, [use24Hours, to24HourFormat, isTimeInPast, hourStep]);
 
   const generateMinutes = React.useCallback((hour, period = null) => {
     const minutes = [];
@@ -111,7 +111,7 @@ const TimePicker = ({
       });
     }
     return minutes;
-  }, [use24Hours, disablePast, to24HourFormat, isTimeInPast, minuteStep]);
+  }, [use24Hours, to24HourFormat, isTimeInPast, minuteStep]);
 
   const periods = [
     { value: 'AM', label: 'AM' },

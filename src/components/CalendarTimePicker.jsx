@@ -113,7 +113,7 @@ const CalendarTimePicker = ({
       }
       return hours;
     }
-  }, [use24Hours, disablePast, to24HourFormat, isTimeInPast, hourStep]);
+  }, [use24Hours, to24HourFormat, isTimeInPast, hourStep]);
 
   const generateMinutes = React.useCallback((date, hour, period = null) => {
     const minutes = [];
@@ -127,7 +127,7 @@ const CalendarTimePicker = ({
       });
     }
     return minutes;
-  }, [use24Hours, disablePast, to24HourFormat, isTimeInPast, minuteStep]);
+  }, [use24Hours, to24HourFormat, isTimeInPast, minuteStep]);
 
   // State for time
   const [selectedTime, setSelectedTime] = useState(() => {
