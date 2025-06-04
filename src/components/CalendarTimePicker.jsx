@@ -334,8 +334,7 @@ const CalendarTimePicker = ({
       borderRadius: '12px',
       padding: '20px',
       boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
-      width: '100%',
-      maxWidth: '350px'
+      width: '100%'
     }}>
       {/* Calendar Header */}
       <div className="calendar-header" style={{
