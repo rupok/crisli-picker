@@ -547,19 +547,22 @@ const Wheel = ({
       }}
     >
       {/* Highlight for the selected item */}
-      <div className="crisli-wheel-highlight" style={{
-        position: 'absolute',
-        top: '50%',
-        transform: 'translateY(-50%)',
-        height: itemHeight,
-        width: '100%',
-        backgroundColor: highlightColor,
-        borderTop: `1px solid ${highlightBorderColor}`,
-        borderBottom: `1px solid ${highlightBorderColor}`,
-        pointerEvents: 'none',
-        zIndex: 1,
-        borderRadius: '4px'
-      }} />
+      <div 
+        className="crisli-wheel-highlight" 
+        data-testid="wheel-highlight"
+        style={{
+          position: 'absolute',
+          top: '50%',
+          transform: 'translateY(-50%)',
+          height: itemHeight,
+          width: '100%',
+          backgroundColor: highlightColor,
+          borderTop: `1px solid ${highlightBorderColor}`,
+          borderBottom: `1px solid ${highlightBorderColor}`,
+          pointerEvents: 'none',
+          zIndex: 1,
+          borderRadius: '4px'
+        }} />
 
       {/* Gradient overlays for fading effect - theme aware */}
       <div style={{

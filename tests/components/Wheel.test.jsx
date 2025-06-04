@@ -38,7 +38,7 @@ describe('Wheel Component', () => {
     expect(selectedItem).toBeInTheDocument();
     
     // The selected item should have different styling
-    expect(selectedItem.parentElement).toHaveStyle({
+    expect(selectedItem).toHaveStyle({
       fontWeight: '600'
     });
   });
@@ -136,7 +136,7 @@ describe('Wheel Component', () => {
     
     // Initially should show Option 1 as selected
     let selectedItem = screen.getByText('Option 1');
-    expect(selectedItem.parentElement).toHaveStyle({
+    expect(selectedItem).toHaveStyle({
       fontWeight: '600'
     });
     
@@ -145,7 +145,7 @@ describe('Wheel Component', () => {
     
     // Now Option 3 should be selected
     selectedItem = screen.getByText('Option 3');
-    expect(selectedItem.parentElement).toHaveStyle({
+    expect(selectedItem).toHaveStyle({
       fontWeight: '600'
     });
   });
@@ -159,10 +159,11 @@ describe('Wheel Component', () => {
     
     render(<Wheel {...customProps} />);
     
-    const highlight = document.querySelector('.crisli-wheel-highlight');
+    const highlight = screen.getByTestId('wheel-highlight');
     expect(highlight).toHaveStyle({
       backgroundColor: 'rgba(255, 0, 0, 0.1)',
-      borderColor: 'rgba(255, 0, 0, 0.3)'
+      borderTop: '1px solid rgba(255, 0, 0, 0.3)',
+      borderBottom: '1px solid rgba(255, 0, 0, 0.3)'
     });
   });
 });
