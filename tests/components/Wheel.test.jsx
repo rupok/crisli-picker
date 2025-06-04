@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Wheel from '../../src/components/Wheel';
 
@@ -33,12 +33,12 @@ describe('Wheel Component', () => {
 
   test('highlights selected item', () => {
     render(<Wheel {...defaultProps} />);
-    
+
     const selectedItem = screen.getByText('Option 2');
     expect(selectedItem).toBeInTheDocument();
-    
-    // The selected item should have different styling
-    expect(selectedItem.parentElement).toHaveStyle({
+
+    // The selected item should have different styling (styles are applied directly to the item)
+    expect(selectedItem).toHaveStyle({
       fontWeight: '600'
     });
   });
@@ -46,12 +46,15 @@ describe('Wheel Component', () => {
   test('calls onChange when item is clicked', async () => {
     const user = userEvent.setup();
     const mockOnChange = jest.fn();
-    
+
     render(<Wheel {...defaultProps} onChange={mockOnChange} />);
-    
+
     const item = screen.getByText('Option 3');
-    await user.click(item);
-    
+
+    await act(async () => {
+      await user.click(item);
+    });
+
     // Should eventually call onChange with the new value
     await waitFor(() => {
       expect(mockOnChange).toHaveBeenCalledWith(3);
@@ -78,12 +81,14 @@ describe('Wheel Component', () => {
   test('handles wheel scroll events', () => {
     const mockOnChange = jest.fn();
     render(<Wheel {...defaultProps} onChange={mockOnChange} />);
-    
+
     const wheelContainer = document.querySelector('.crisli-wheel-container');
-    
+
     // Simulate wheel event
-    fireEvent.wheel(wheelContainer, { deltaY: 100 });
-    
+    act(() => {
+      fireEvent.wheel(wheelContainer, { deltaY: 100 });
+    });
+
     // The component should handle the wheel event
     expect(wheelContainer).toBeInTheDocument();
   });
@@ -91,20 +96,22 @@ describe('Wheel Component', () => {
   test('handles touch events', () => {
     const mockOnChange = jest.fn();
     render(<Wheel {...defaultProps} onChange={mockOnChange} />);
-    
+
     const wheelContainer = document.querySelector('.crisli-wheel-container');
-    
+
     // Simulate touch events
-    fireEvent.touchStart(wheelContainer, {
-      touches: [{ clientY: 100 }]
+    act(() => {
+      fireEvent.touchStart(wheelContainer, {
+        touches: [{ clientY: 100 }]
+      });
+
+      fireEvent.touchMove(wheelContainer, {
+        touches: [{ clientY: 150 }]
+      });
+
+      fireEvent.touchEnd(wheelContainer);
     });
-    
-    fireEvent.touchMove(wheelContainer, {
-      touches: [{ clientY: 150 }]
-    });
-    
-    fireEvent.touchEnd(wheelContainer);
-    
+
     // The component should handle touch events
     expect(wheelContainer).toBeInTheDocument();
   });
@@ -112,14 +119,16 @@ describe('Wheel Component', () => {
   test('handles mouse drag events', () => {
     const mockOnChange = jest.fn();
     render(<Wheel {...defaultProps} onChange={mockOnChange} />);
-    
+
     const wheelContainer = document.querySelector('.crisli-wheel-container');
-    
+
     // Simulate mouse drag
-    fireEvent.mouseDown(wheelContainer, { clientY: 100 });
-    fireEvent.mouseMove(document, { clientY: 150 });
-    fireEvent.mouseUp(document);
-    
+    act(() => {
+      fireEvent.mouseDown(wheelContainer, { clientY: 100 });
+      fireEvent.mouseMove(document, { clientY: 150 });
+      fireEvent.mouseUp(document);
+    });
+
     // The component should handle mouse events
     expect(wheelContainer).toBeInTheDocument();
   });
@@ -133,19 +142,21 @@ describe('Wheel Component', () => {
 
   test('updates when value prop changes', () => {
     const { rerender } = render(<Wheel {...defaultProps} value={1} />);
-    
+
     // Initially should show Option 1 as selected
     let selectedItem = screen.getByText('Option 1');
-    expect(selectedItem.parentElement).toHaveStyle({
+    expect(selectedItem).toHaveStyle({
       fontWeight: '600'
     });
-    
+
     // Change value prop
-    rerender(<Wheel {...defaultProps} value={3} />);
-    
+    act(() => {
+      rerender(<Wheel {...defaultProps} value={3} />);
+    });
+
     // Now Option 3 should be selected
     selectedItem = screen.getByText('Option 3');
-    expect(selectedItem.parentElement).toHaveStyle({
+    expect(selectedItem).toHaveStyle({
       fontWeight: '600'
     });
   });
@@ -156,13 +167,14 @@ describe('Wheel Component', () => {
       highlightColor: 'rgba(255, 0, 0, 0.1)',
       highlightBorderColor: 'rgba(255, 0, 0, 0.3)',
     };
-    
+
     render(<Wheel {...customProps} />);
-    
+
     const highlight = document.querySelector('.crisli-wheel-highlight');
     expect(highlight).toHaveStyle({
       backgroundColor: 'rgba(255, 0, 0, 0.1)',
-      borderColor: 'rgba(255, 0, 0, 0.3)'
+      borderTop: '1px solid rgba(255, 0, 0, 0.3)',
+      borderBottom: '1px solid rgba(255, 0, 0, 0.3)'
     });
   });
 });

@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import DateTimePicker from '../../src/components/DateTimePicker';
 
@@ -48,7 +48,10 @@ describe('DateTimePicker Component', () => {
     // Find and click on a different day (use getAllByText to get the first occurrence which should be the day)
     const dayOptions = screen.getAllByText('16');
     const dayOption = dayOptions[0]; // First occurrence should be the day wheel
-    await userEvent.click(dayOption);
+
+    await act(async () => {
+      await userEvent.click(dayOption);
+    });
 
     // Should eventually call onChange
     await waitFor(() => {
@@ -120,16 +123,19 @@ describe('DateTimePicker Component', () => {
   test('handles month changes correctly', async () => {
     const mockOnChange = jest.fn();
     render(<DateTimePicker {...defaultProps} onChange={mockOnChange} />);
-    
+
     // Find and click on a different month (July)
     const monthOption = screen.getByText('July');
-    await userEvent.click(monthOption);
-    
+
+    await act(async () => {
+      await userEvent.click(monthOption);
+    });
+
     // Should eventually call onChange
     await waitFor(() => {
       expect(mockOnChange).toHaveBeenCalled();
     }, { timeout: 1000 });
-    
+
     // Verify the new date has correct month
     const lastCall = mockOnChange.mock.calls[mockOnChange.mock.calls.length - 1];
     const newDate = lastCall[0];
@@ -169,7 +175,10 @@ describe('DateTimePicker Component', () => {
     const hourOptions = screen.getAllByText('16');
     // The hour option should be the last occurrence (after day wheel)
     const hourOption = hourOptions[hourOptions.length - 1];
-    await userEvent.click(hourOption);
+
+    await act(async () => {
+      await userEvent.click(hourOption);
+    });
 
     // Should eventually call onChange
     await waitFor(() => {
