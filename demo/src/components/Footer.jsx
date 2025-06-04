@@ -1,4 +1,5 @@
-import React from 'react';
+import React from 'react'
+import { Link } from 'react-router-dom';
 import CrisliIcon from './CrisliIcon';
 import CrisliAppIcon from './CrisliAppIcon';
 
@@ -50,33 +51,33 @@ const Footer = ({ theme = 'light' }) => {
               Quick Links
             </h4>
             <div className="space-y-3">
-              <a
-                href="/docs"
+              <Link
+                to="/docs"
                 className="group flex items-center gap-3 text-gray-300 hover:text-white transition-all duration-200 hover:translate-x-1"
               >
                 <svg className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"/>
                 </svg>
                 <span>Documentation</span>
-              </a>
-              <a
-                href="/components"
+              </Link>
+              <Link
+                to="/components"
                 className="group flex items-center gap-3 text-gray-300 hover:text-white transition-all duration-200 hover:translate-x-1"
               >
                 <svg className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M3 4a1 1 0 011-1h4a1 1 0 010 2H6.414l2.293 2.293a1 1 0 01-1.414 1.414L5 6.414V8a1 1 0 01-2 0V4zm9 1a1 1 0 010-2h4a1 1 0 011 1v4a1 1 0 01-2 0V6.414l-2.293 2.293a1 1 0 11-1.414-1.414L13.586 5H12zm-9 7a1 1 0 012 0v1.586l2.293-2.293a1 1 0 111.414 1.414L6.414 15H8a1 1 0 010 2H4a1 1 0 01-1-1v-4zm13-1a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 010-2h1.586l-2.293-2.293a1 1 0 111.414-1.414L15 13.586V12a1 1 0 011-1z" clipRule="evenodd"/>
                 </svg>
                 <span>Components</span>
-              </a>
-              <a
-                href="/examples"
+              </Link>
+              <Link
+                to="/examples"
                 className="group flex items-center gap-3 text-gray-300 hover:text-white transition-all duration-200 hover:translate-x-1"
               >
                 <svg className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd"/>
                 </svg>
                 <span>Examples</span>
-              </a>
+              </Link>
             </div>
           </div>
 
